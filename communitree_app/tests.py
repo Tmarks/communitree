@@ -1,5 +1,6 @@
 from django.test import TestCase
 from .models import CropFeature
+from django.contrib.gis.geos import GEOSGeometry, MultiPolygon
 
 # Create your tests here.
 
@@ -12,14 +13,16 @@ class CropFeatureTests(TestCase):
         updated if that changes.
         """
 
-        cf = CropFeature.objects.create(name="Blueberry", mpoly="MULTIPOLYGON (((-71.239633 42.408400, -71.239621 42.408490, -71.239509 42.408486, -71.239509 42.408486, -71.239633 42.408400)))")
+        mp = GEOSGeometry("SRID=4326;MULTIPOLYGON (((-71.239633 42.408400, -71.239621 42.408490, -71.239509 42.408486, -71.239509 42.408486, -71.239633 42.408400)))")
+        cf = CropFeature.objects.create(name="Blueberry", mpoly=mp)
         cfq = CropFeature.objects.all()[0]
         self.assertIsNotNone(cfq)
         self.assertTrue(cfq.name == "Blueberry")
         
         #This, really is not very good. I know that.
-        self.assertTrue(str(cfq.mpoly) == "MULTIPOLYGON (((-71.239633 42.408400, -71.239621 42.408490, -71.239509 42.408486, -71.239509 42.408486, -71.239633 42.408400)))")
-        self.assertNone(cfq.species)
+ 
+        self.assertEquals(cfq.mpoly, mp)
+        self.assertIsNone(cfq.species)
 
 
 """
