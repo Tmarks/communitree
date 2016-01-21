@@ -33,9 +33,9 @@ class PruningTests(TestCase):
         mp = GEOSGeometry("SRID=4326;MULTIPOLYGON (((-71.239633 42.408400, -71.239621 42.408490, -71.239509 42.408486, -71.239509 42.408486, -71.239633 42.408400)))")
         cf = CropFeature(name="Blueberry", mpoly=mp)
         pr = Pruning(crop_feature=cf, completion_percentage=0.1)
-        self.assertIsNotNone(prq)
+        self.assertIsNotNone(pr)
         self.assertEquals(pr.crop_feature, cf)
-        self.asssertEquals(pr.completion_percentage, 0.1)
+        self.assertEquals(pr.completion_percentage, 0.1)
       
 
 """
