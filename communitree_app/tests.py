@@ -1,8 +1,9 @@
 from django.test import TestCase
-from .models import CropFeature, Pruning
+from .models import CropFeature, Pruning, Species
 from django.contrib.gis.geos import GEOSGeometry, MultiPolygon
 
 # Create your tests here.
+
 
 class CropFeatureTests(TestCase):
     def test_create_CropFeature(self):
@@ -36,8 +37,33 @@ class PruningTests(TestCase):
         self.assertIsNotNone(pr)
         self.assertEquals(pr.crop_feature, cf)
         self.assertEquals(pr.completion_percentage, 0.1)
-      
 
+class SpeciesTests(TestCase):
+    def test_create_Species(self):
+        """Test the simplest creation of a Species.
+
+        Needs a scientific name,
+        common name,
+        a USDA zone.
+        """
+
+        sp = Species(scientific_name="Solanum lycopersicum",
+                     common_name="Tomato",
+                     usda_zone="4b")
+
+        self.assertEquals(sp.scientific_name, "Solanum lycopersicum")
+        self.assertEquals(sp.common_name, "Tomato")
+        self.assertEquals(sp.usda_zone, "4b")
+
+        """
+        estimated yield,
+        recommended pruning windows yearly,
+        harvest window
+        are among other things it could have but doesn't require
+        """
+
+
+      
 """
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
