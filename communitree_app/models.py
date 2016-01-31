@@ -24,3 +24,5 @@ class Species(models.Model):
     usda_zone = models.CharField(max_length=2)
 
 
+class USDAZone(models.Model):
+    pass

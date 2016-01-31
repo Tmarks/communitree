@@ -1,5 +1,5 @@
 from django.test import TestCase
-from .models import CropFeature, Pruning, Species
+from .models import CropFeature, Pruning, Species, USDAZone
 from django.contrib.gis.geos import GEOSGeometry, MultiPolygon
 
 # Create your tests here.
@@ -18,7 +18,7 @@ class CropFeatureTests(TestCase):
         cf = CropFeature(name="Blueberry", mpoly=mp)
         self.assertIsNotNone(cf)
         self.assertTrue(cf.name == "Blueberry")
-        self.assertEquals(cf.mpoly, mp)
+        self.assertEqual(cf.mpoly, mp)
         self.assertIsNone(cf.species)
     
 
@@ -35,8 +35,9 @@ class PruningTests(TestCase):
         cf = CropFeature(name="Blueberry", mpoly=mp)
         pr = Pruning(crop_feature=cf, completion_percentage=0.1)
         self.assertIsNotNone(pr)
-        self.assertEquals(pr.crop_feature, cf)
-        self.assertEquals(pr.completion_percentage, 0.1)
+        self.assertEqual(pr.crop_feature, cf)
+        self.assertEqual(pr.completion_percentage, 0.1)
+
 
 class SpeciesTests(TestCase):
     def test_create_Species(self):
@@ -47,23 +48,42 @@ class SpeciesTests(TestCase):
         a USDA zone.
         """
 
-        sp = Species(scientific_name="Solanum lycopersicum",
-                     common_name="Tomato",
-                     usda_zone="4b")
-
-        self.assertEquals(sp.scientific_name, "Solanum lycopersicum")
-        self.assertEquals(sp.common_name, "Tomato")
-        self.assertEquals(sp.usda_zone, "4b")
-
         """
         estimated yield,
         recommended pruning windows yearly,
         harvest window
         are among other things it could have but doesn't require
+        TODO: Add these anyway
         """
 
+        sp = Species(scientific_name="Solanum lycopersicum",
+                     common_name="Tomato",
+                     usda_zone="4b")
 
-      
+        self.assertEqual(sp.scientific_name, "Solanum lycopersicum")
+        self.assertEqual(sp.common_name, "Tomato")
+        self.assertEqual(sp.usda_zone, "4b")
+
+    """
+    def test_invalid_choice_for_usda_zone(self):
+        sp = Species(scientific_name="Solanum lycopersicum",
+                     common_name="Tomato",
+                     usda_zone="20")
+                     """
+
+
+class USDAZoneTests(TestCase):
+    def test_create_USDAZone(self):
+        """Test the simplest creation of a USDA Zone.
+
+        It just needs the zone name.
+        It's never going to be used by a user but it has to be done.
+        """
+        z = USDAZone(name="4a")
+        self.assertEqual(z.name, "4a")
+
+
+
 """
 class Question(models.Model):
     question_text = models.CharField(max_length=200)
