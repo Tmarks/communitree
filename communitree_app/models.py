@@ -25,4 +25,5 @@ class Species(models.Model):
 
 
 class USDAZone(models.Model):
-    pass
+    name = models.CharField(max_length=2, default="1")
+
