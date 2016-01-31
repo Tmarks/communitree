@@ -1,6 +1,7 @@
 from django.test import TestCase
 from .models import CropFeature, Pruning, Species, USDAZone
 from django.contrib.gis.geos import GEOSGeometry, MultiPolygon
+from django.db import IntegrityError
 
 # Create your tests here.
 
@@ -40,6 +41,42 @@ class PruningTests(TestCase):
 
 
 class SpeciesTests(TestCase):
+    """ """
+    '''
+    def setUpClass(cls):
+        """Set up for testing the Species relation (and related tables).
+
+        These tests require that there exist entries in the USDAZone table.
+        So we must make some here.
+        """
+        USDAZone.objects.create(name="1a")
+        USDAZone.objects.create(name="1b")
+        USDAZone.objects.create(name="2a")
+        USDAZone.objects.create(name="2b")
+        USDAZone.objects.create(name="3a")
+        USDAZone.objects.create(name="3b")
+        USDAZone.objects.create(name="4a")
+        USDAZone.objects.create(name="4b")
+        USDAZone.objects.create(name="5a")
+        USDAZone.objects.create(name="5b")
+        USDAZone.objects.create(name="6a")
+        USDAZone.objects.create(name="6b")
+        USDAZone.objects.create(name="7a")
+        USDAZone.objects.create(name="7b")
+        USDAZone.objects.create(name="8a")
+        USDAZone.objects.create(name="8b")
+        USDAZone.objects.create(name="9a")
+        USDAZone.objects.create(name="9b")
+        USDAZone.objects.create(name="10a")
+        USDAZone.objects.create(name="10b")
+        USDAZone.objects.create(name="11a")
+        USDAZone.objects.create(name="11b")
+        USDAZone.objects.create(name="12a")
+        USDAZone.objects.create(name="12b")
+        USDAZone.objects.create(name="13a")
+        USDAZone.objects.create(name="13b")
+    '''
+
     def test_create_Species(self):
         """Test the simplest creation of a Species.
 
@@ -78,9 +115,20 @@ class USDAZoneTests(TestCase):
 
         It just needs the zone name.
         It's never going to be used by a user but it has to be done.
+        This way, there is room for it to grow. We could possibly add data to a Zone. Like, perhaps which states
+        fall into it.
+        Or maybe even make geometry for it. Oh wait. That actually sounds important now that I say it.
         """
         z = USDAZone(name="4a")
         self.assertEqual(z.name, "4a")
+
+    def test_USDAZone_name_is_unique(self):
+        """This test probably isn't really good or necessary but I needed to write it before making this change."""
+        USDAZone.objects.create(name="4a")
+        self.assertRaises(IntegrityError, USDAZone.objects.create, name="4a")
+
+
+
 
 
 
