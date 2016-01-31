@@ -19,4 +19,8 @@ class Pruning(models.Model):
 
 
 class Species(models.Model):
-    pass
+    scientific_name = models.CharField(max_length=100)
+    common_name = models.CharField(max_length=70)
+    usda_zone = models.CharField(max_length=2)
+
+
