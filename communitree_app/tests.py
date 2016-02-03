@@ -16,7 +16,7 @@ class CropFeatureTests(TestCase):
         """
 
         mp = GEOSGeometry("SRID=4326;MULTIPOLYGON (((-71.239633 42.408400, -71.239621 42.408490, -71.239509 42.408486, -71.239509 42.408486, -71.239633 42.408400)))")
-        cf = CropFeature(name="Blueberry", mpoly=mp)
+        cf = CropFeature.objects.create(name="Blueberry", mpoly=mp)
         self.assertIsNotNone(cf)
         self.assertTrue(cf.name == "Blueberry")
         self.assertEqual(cf.mpoly, mp)
@@ -33,8 +33,8 @@ class PruningTests(TestCase):
         """
 
         mp = GEOSGeometry("SRID=4326;MULTIPOLYGON (((-71.239633 42.408400, -71.239621 42.408490, -71.239509 42.408486, -71.239509 42.408486, -71.239633 42.408400)))")
-        cf = CropFeature(name="Blueberry", mpoly=mp)
-        pr = Pruning(crop_feature=cf, completion_percentage=0.1)
+        cf = CropFeature.objects.create(name="Blueberry", mpoly=mp)
+        pr = Pruning.objects.create(crop_feature=cf, completion_percentage=0.1)
         self.assertIsNotNone(pr)
         self.assertEqual(pr.crop_feature, cf)
         self.assertEqual(pr.completion_percentage, 0.1)
@@ -42,8 +42,7 @@ class PruningTests(TestCase):
 
 class SpeciesTests(TestCase):
     """ """
-    '''
-    def setUpClass(cls):
+    def setUp(cls):
         """Set up for testing the Species relation (and related tables).
 
         These tests require that there exist entries in the USDAZone table.
@@ -75,14 +74,16 @@ class SpeciesTests(TestCase):
         USDAZone.objects.create(name="12b")
         USDAZone.objects.create(name="13a")
         USDAZone.objects.create(name="13b")
-    '''
+
+    def tearDown(self):
+        USDAZone.objects.all().delete()
 
     def test_create_Species(self):
         """Test the simplest creation of a Species.
 
         Needs a scientific name,
         common name,
-        a USDA zone.
+        a reference to a USDAZone.
         """
 
         """
@@ -93,13 +94,16 @@ class SpeciesTests(TestCase):
         TODO: Add these anyway
         """
 
-        sp = Species(scientific_name="Solanum lycopersicum",
-                     common_name="Tomato",
-                     usda_zone="4b")
+        sp = Species.objects.create(scientific_name="Solanum lycopersicum",
+                                    common_name="Tomato")
+
+        sp.usda_zones.add(USDAZone.objects.get(name="4a"))
 
         self.assertEqual(sp.scientific_name, "Solanum lycopersicum")
         self.assertEqual(sp.common_name, "Tomato")
-        self.assertEqual(sp.usda_zone, "4b")
+
+        z4a = USDAZone.objects.get(name="4a")
+        self.assertTrue(z4a in sp.usda_zones.all())
 
     """
     def test_invalid_choice_for_usda_zone(self):
@@ -119,7 +123,7 @@ class USDAZoneTests(TestCase):
         fall into it.
         Or maybe even make geometry for it. Oh wait. That actually sounds important now that I say it.
         """
-        z = USDAZone(name="4a")
+        z = USDAZone.objects.create(name="4a")
         self.assertEqual(z.name, "4a")
 
     def test_USDAZone_name_is_unique(self):

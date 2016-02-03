@@ -18,12 +18,11 @@ class Pruning(models.Model):
     completion_percentage = models.DecimalField(max_digits=3, decimal_places=2)
 
 
+class USDAZone(models.Model):
+    name = models.CharField(max_length=3, default="1", unique=True)
+
+
 class Species(models.Model):
     scientific_name = models.CharField(max_length=100)
     common_name = models.CharField(max_length=70)
-    usda_zone = models.CharField(max_length=2)
-
-
-class USDAZone(models.Model):
-    name = models.CharField(max_length=2, default="1", unique=True)
-
+    usda_zones = models.ManyToManyField(USDAZone)
