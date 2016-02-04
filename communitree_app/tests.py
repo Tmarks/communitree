@@ -21,7 +21,26 @@ class CropFeatureTests(TestCase):
         self.assertTrue(cf.name == "Blueberry")
         self.assertEqual(cf.mpoly, mp)
         self.assertIsNone(cf.species)
-    
+
+    def test_get_Species_from_CropFeature(self):
+        """Test getting the Species reference from a CropFeature."""
+        mp = GEOSGeometry("SRID=4326;MULTIPOLYGON (((-71.239633 42.408400, "
+                          "-71.239621 42.408490, "
+                          "-71.239509 42.408486, "
+                          "-71.239509 42.408486, "
+                          "-71.239633 42.408400)))")
+
+        sp = Species.objects.create(scientific_name="Solanum lycopersicum",
+                                    common_name="Tomato")
+
+        # Current minimum requirements for CropFeature are geometry and name
+        # so we must include these.
+        cf = CropFeature.objects.create(name="Tasty Tomato nearby", mpoly=mp, species=sp)
+        cfq = CropFeature.objects.all()[0]
+
+        # but we only need test the species
+        self.assertEqual(cfq.species, sp)
+
 
 class PruningTests(TestCase):
     def test_create_Pruning(self):
@@ -42,7 +61,7 @@ class PruningTests(TestCase):
 
 class SpeciesTests(TestCase):
     """ """
-    def setUp(cls):
+    def setUp(self):
         """Set up for testing the Species relation (and related tables).
 
         These tests require that there exist entries in the USDAZone table.
