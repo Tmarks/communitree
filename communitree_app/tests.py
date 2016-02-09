@@ -7,6 +7,19 @@ from django.db import IntegrityError
 
 
 class CropFeatureTests(TestCase):
+    def setUp(self):
+        self.mp = GEOSGeometry("SRID=4326;MULTIPOLYGON (((-71.239633 42.408400, "
+                          "-71.239621 42.408490, "
+                          "-71.239509 42.408486, "
+                          "-71.239509 42.408486, "
+                          "-71.239633 42.408400)))")
+
+        self.sp = Species.objects.create(scientific_name="Solanum lycopersicum",
+                                    common_name="Tomato")
+
+    def tearDown(self):
+        Species.objects.all().delete()
+
     def test_create_CropFeature(self):
         """Test the simplest creation of a CropFeature.
 
@@ -15,31 +28,30 @@ class CropFeatureTests(TestCase):
         updated if that changes.
         """
 
-        mp = GEOSGeometry("SRID=4326;MULTIPOLYGON (((-71.239633 42.408400, -71.239621 42.408490, -71.239509 42.408486, -71.239509 42.408486, -71.239633 42.408400)))")
-        cf = CropFeature.objects.create(name="Blueberry", mpoly=mp)
+        cf = CropFeature.objects.create(name="Blueberry", mpoly=self.mp)
         self.assertIsNotNone(cf)
-        self.assertTrue(cf.name == "Blueberry")
-        self.assertEqual(cf.mpoly, mp)
+        self.assertEqual(cf.name, "Blueberry")
+        self.assertEqual(cf.mpoly, self.mp)
         self.assertIsNone(cf.species)
 
     def test_get_Species_from_CropFeature(self):
         """Test getting the Species reference from a CropFeature."""
-        mp = GEOSGeometry("SRID=4326;MULTIPOLYGON (((-71.239633 42.408400, "
-                          "-71.239621 42.408490, "
-                          "-71.239509 42.408486, "
-                          "-71.239509 42.408486, "
-                          "-71.239633 42.408400)))")
-
-        sp = Species.objects.create(scientific_name="Solanum lycopersicum",
-                                    common_name="Tomato")
-
         # Current minimum requirements for CropFeature are geometry and name
         # so we must include these.
-        cf = CropFeature.objects.create(name="Tasty Tomato nearby", mpoly=mp, species=sp)
+        CropFeature.objects.create(name="Tasty Tomato nearby", mpoly=self.mp, species=self.sp)
         cfq = CropFeature.objects.all()[0]
 
         # but we only need test the species
-        self.assertEqual(cfq.species, sp)
+        self.assertEqual(cfq.species, self.sp)
+
+    def test_add_Prunings_to_CropFeature(self):
+        CropFeature.objects.create(name="Tasty Tomato nearby", mpoly=self.mp, species=self.sp)
+        cfq = CropFeature.objects.all()[0]
+
+        pr = Pruning.objects.create(cropfeature=cfq, completion_percentage=0.1)
+
+        self.assertEqual(len(cfq.pruning_set.all()), 1)
+        self.assertEqual(cfq.pruning_set.all()[0], pr)
 
 
 class PruningTests(TestCase):
@@ -53,9 +65,9 @@ class PruningTests(TestCase):
 
         mp = GEOSGeometry("SRID=4326;MULTIPOLYGON (((-71.239633 42.408400, -71.239621 42.408490, -71.239509 42.408486, -71.239509 42.408486, -71.239633 42.408400)))")
         cf = CropFeature.objects.create(name="Blueberry", mpoly=mp)
-        pr = Pruning.objects.create(crop_feature=cf, completion_percentage=0.1)
+        pr = Pruning.objects.create(cropfeature=cf, completion_percentage=0.1)
         self.assertIsNotNone(pr)
-        self.assertEqual(pr.crop_feature, cf)
+        self.assertEqual(pr.cropfeature, cf)
         self.assertEqual(pr.completion_percentage, 0.1)
 
 
@@ -67,32 +79,8 @@ class SpeciesTests(TestCase):
         These tests require that there exist entries in the USDAZone table.
         So we must make some here.
         """
-        USDAZone.objects.create(name="1a")
-        USDAZone.objects.create(name="1b")
-        USDAZone.objects.create(name="2a")
-        USDAZone.objects.create(name="2b")
-        USDAZone.objects.create(name="3a")
-        USDAZone.objects.create(name="3b")
-        USDAZone.objects.create(name="4a")
-        USDAZone.objects.create(name="4b")
-        USDAZone.objects.create(name="5a")
-        USDAZone.objects.create(name="5b")
-        USDAZone.objects.create(name="6a")
-        USDAZone.objects.create(name="6b")
-        USDAZone.objects.create(name="7a")
-        USDAZone.objects.create(name="7b")
-        USDAZone.objects.create(name="8a")
-        USDAZone.objects.create(name="8b")
-        USDAZone.objects.create(name="9a")
-        USDAZone.objects.create(name="9b")
-        USDAZone.objects.create(name="10a")
-        USDAZone.objects.create(name="10b")
-        USDAZone.objects.create(name="11a")
-        USDAZone.objects.create(name="11b")
-        USDAZone.objects.create(name="12a")
-        USDAZone.objects.create(name="12b")
-        USDAZone.objects.create(name="13a")
-        USDAZone.objects.create(name="13b")
+        for s in [str(x)+y for x in range(1, 14) for y in 'ab']:
+            USDAZone.objects.create(name=s)
 
     def tearDown(self):
         USDAZone.objects.all().delete()
@@ -124,13 +112,6 @@ class SpeciesTests(TestCase):
         z4a = USDAZone.objects.get(name="4a")
         self.assertTrue(z4a in sp.usda_zones.all())
 
-    """
-    def test_invalid_choice_for_usda_zone(self):
-        sp = Species(scientific_name="Solanum lycopersicum",
-                     common_name="Tomato",
-                     usda_zone="20")
-                     """
-
 
 class USDAZoneTests(TestCase):
     def test_create_USDAZone(self):
@@ -149,24 +130,3 @@ class USDAZoneTests(TestCase):
         """This test probably isn't really good or necessary but I needed to write it before making this change."""
         USDAZone.objects.create(name="4a")
         self.assertRaises(IntegrityError, USDAZone.objects.create, name="4a")
-
-
-
-
-
-
-"""
-class Question(models.Model):
-    question_text = models.CharField(max_length=200)
-    pub_date = models.DateTimeField('date published')
-
-    def was_published_recently(self):
-        now = timezone.now()
-        return now - datetime.timedelta(days=1) <= self.pub_date <= now
-
-
-class Choice(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    choice_text = models.CharField(max_length=200)
-    votes = models.IntegerField(default=0)
-"""
