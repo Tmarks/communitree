@@ -2,6 +2,7 @@ from django.test import TestCase
 from .models import CropFeature, Pruning, Species, USDAZone
 from django.contrib.gis.geos import GEOSGeometry, MultiPolygon
 from django.db import IntegrityError
+from datetime import datetime, timedelta
 
 # Create your tests here.
 
@@ -55,6 +56,8 @@ class CropFeatureTests(TestCase):
 
 
 class PruningTests(TestCase):
+    """Tests of classes/functions that are meant to implement the pruning tracking functionality"""
+
     def test_create_Pruning(self):
         """Test the simplest creation of a Pruning.
 
@@ -71,9 +74,33 @@ class PruningTests(TestCase):
         self.assertEqual(pr.completion_percentage, 0.1)
 
 
+class PruningEventTests(TestCase):
+    def setUp(self):
+
+        # Most of the time, it needs a Pruning to work, which needs a CropFeature, which needs a multipolygon...
+        mp = GEOSGeometry("SRID=4326;MULTIPOLYGON (((-71.239633 42.408400, "
+                          "-71.239621 42.408490, "
+                          "-71.239509 42.408486, "
+                          "-71.239509 42.408486, "
+                          "-71.239633 42.408400)))")
+        cf = CropFeature.objects.create(name="Blueberry", mpoly=mp)
+        self.pr = Pruning.objects.create(cropfeature=cf, completion_percentage=0.1)
+
+    def test_create_PruningEvent(self):
+        # It shouldn't take even five seconds to make this object so we test
+        # that it's within five seconds.
+        fiveseconds = timedelta(seconds=5)
+
+        pe = PruningEvent.objects.create(pruning=self.pr)
+        peq = PruningEvent.objects.all()[0]
+        self.assertEqual(self.pr, peq.pruning)
+        self.assertTrue(datetime.now() - peq.time < fiveseconds)
+
+
 class SpeciesTests(TestCase):
     """ """
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         """Set up for testing the Species relation (and related tables).
 
         These tests require that there exist entries in the USDAZone table.
@@ -82,7 +109,8 @@ class SpeciesTests(TestCase):
         for s in [str(x)+y for x in range(1, 14) for y in 'ab']:
             USDAZone.objects.create(name=s)
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(cls):
         USDAZone.objects.all().delete()
 
     def test_create_Species(self):
