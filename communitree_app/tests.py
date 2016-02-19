@@ -77,24 +77,31 @@ class PruningTests(TestCase):
 class PruningEventTests(TestCase):
     def setUp(self):
 
-        # Most of the time, it needs a Pruning to work, which needs a CropFeature, which needs a multipolygon...
+        # it needs a CropFeature, which needs a multipolygon...
         mp = GEOSGeometry("SRID=4326;MULTIPOLYGON (((-71.239633 42.408400, "
                           "-71.239621 42.408490, "
                           "-71.239509 42.408486, "
                           "-71.239509 42.408486, "
                           "-71.239633 42.408400)))")
-        cf = CropFeature.objects.create(name="Blueberry", mpoly=mp)
-        self.pr = Pruning.objects.create(cropfeature=cf, completion_percentage=0.1)
+        self.cf = CropFeature.objects.create(name="Blueberry", mpoly=mp)
+
+        # We may need a pruning.
+        self.pr = Pruning.objects.create(cropfeature=self.cf, completion_percentage=0.1)
 
     def test_create_PruningEvent(self):
+        """PruningEvent creation, simplest case
+        Has a start_time (by default, time of event creation),
+        and a CropFeature it's associated with.
+        """
         # It shouldn't take even five seconds to make this object so we test
         # that it's within five seconds.
         fiveseconds = timedelta(seconds=5)
 
-        pe = PruningEvent.objects.create(pruning=self.pr)
+        pe = PruningEvent.objects.create(self.cf)
         peq = PruningEvent.objects.all()[0]
-        self.assertEqual(self.pr, peq.pruning)
-        self.assertTrue(datetime.now() - peq.time < fiveseconds)
+
+        # A PruningEvent's default start time is "now"
+        self.assertTrue(datetime.now() - peq.start_time < fiveseconds)
 
 
 class SpeciesTests(TestCase):
