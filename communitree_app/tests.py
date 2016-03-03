@@ -1,8 +1,9 @@
 from django.test import TestCase
-from .models import CropFeature, Pruning, Species, USDAZone
+from .models import CropFeature, Pruning, Species, USDAZone, PruningEvent
 from django.contrib.gis.geos import GEOSGeometry, MultiPolygon
 from django.db import IntegrityError
-from datetime import datetime, timedelta
+from datetime import timedelta
+from django.utils import timezone
 
 # Create your tests here.
 
@@ -93,15 +94,22 @@ class PruningEventTests(TestCase):
         Has a start_time (by default, time of event creation),
         and a CropFeature it's associated with.
         """
-        # It shouldn't take even five seconds to make this object so we test
-        # that it's within five seconds.
-        fiveseconds = timedelta(seconds=5)
 
-        pe = PruningEvent.objects.create(self.cf)
+        PruningEvent.objects.create(cropfeature=self.cf)
         peq = PruningEvent.objects.all()[0]
 
+        self.assertIsNotNone(peq.start_time)
+        self.assertEqual(peq.cropfeature, self.cf)
+
+    def test_start_time_on_new_PruningEvent(self):
+        # It shouldn't take even five seconds to make this object so we test
+        # that it's within five seconds. It's sufficient.
+        fiveseconds = timedelta(seconds=5)
+
         # A PruningEvent's default start time is "now"
-        self.assertTrue(datetime.now() - peq.start_time < fiveseconds)
+        PruningEvent.objects.create(cropfeature=self.cf)
+        peq = PruningEvent.objects.all()[0]
+        self.assertTrue(timezone.now() - peq.start_time < fiveseconds)
 
 
 class SpeciesTests(TestCase):

@@ -33,3 +33,8 @@ class Pruning(models.Model):
     cropfeature = models.ForeignKey(CropFeature, on_delete=models.CASCADE)
     log_time = models.DateTimeField(default=timezone.now)
     completion_percentage = models.DecimalField(max_digits=3, decimal_places=2)
+
+
+class PruningEvent(models.Model):
+    cropfeature = models.ForeignKey(CropFeature, on_delete=models.CASCADE)
+    start_time = models.DateTimeField(default=timezone.now)
