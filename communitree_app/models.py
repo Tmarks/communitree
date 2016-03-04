@@ -30,7 +30,8 @@ class Pruning(models.Model):
     work they've done and tell Communitree. A Pruning is created on that
     CropFeature to log it.
     """
-    cropfeature = models.ForeignKey(CropFeature, on_delete=models.CASCADE)
+    #cropfeature = models.ForeignKey(CropFeature, on_delete=models.CASCADE)
+    pruningevent = models.ForeignKey("PruningEvent", on_delete=models.CASCADE)
     log_time = models.DateTimeField(default=timezone.now)
     completion_percentage = models.DecimalField(max_digits=3, decimal_places=2)
 

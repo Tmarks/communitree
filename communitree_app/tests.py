@@ -46,15 +46,6 @@ class CropFeatureTests(TestCase):
         # but we only need test the species
         self.assertEqual(cfq.species, self.sp)
 
-    def test_add_Prunings_to_CropFeature(self):
-        CropFeature.objects.create(name="Tasty Tomato nearby", mpoly=self.mp, species=self.sp)
-        cfq = CropFeature.objects.all()[0]
-
-        pr = Pruning.objects.create(cropfeature=cfq, completion_percentage=0.1)
-
-        self.assertEqual(len(cfq.pruning_set.all()), 1)
-        self.assertEqual(cfq.pruning_set.all()[0], pr)
-
 
 class PruningTests(TestCase):
     """Tests of classes/functions that are meant to implement the pruning tracking functionality"""
@@ -91,8 +82,6 @@ class PruningEventTests(TestCase):
                           "-71.239633 42.408400)))")
         self.cf = CropFeature.objects.create(name="Blueberry", mpoly=mp)
 
-        # We may need a pruning.
-        self.pr = Pruning.objects.create(cropfeature=self.cf, completion_percentage=0.1)
 
     def test_create_PruningEvent(self):
         """PruningEvent creation, simplest case
