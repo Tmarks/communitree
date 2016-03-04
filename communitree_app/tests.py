@@ -59,19 +59,24 @@ class CropFeatureTests(TestCase):
 class PruningTests(TestCase):
     """Tests of classes/functions that are meant to implement the pruning tracking functionality"""
 
+    def setUp(self):
+        # A Pruning must be associated with a PruningEvent. That is the foreign key.
+        # So make one here.
+        mp = GEOSGeometry("SRID=4326;MULTIPOLYGON (((-71.239633 42.408400, -71.239621 42.408490, -71.239509 42.408486, -71.239509 42.408486, -71.239633 42.408400)))")
+        cf = CropFeature.objects.create(name="Blueberry", mpoly=mp)
+        self.pe = PruningEvent.objects.create(cropfeature=cf)
+
     def test_create_Pruning(self):
         """Test the simplest creation of a Pruning.
 
         Pruning needs a time and an approximate completion percentage.
-        It maps to a CropFeature.
+        It maps to a PruningEvent.
         Has a default DateTime of now().
         """
 
-        mp = GEOSGeometry("SRID=4326;MULTIPOLYGON (((-71.239633 42.408400, -71.239621 42.408490, -71.239509 42.408486, -71.239509 42.408486, -71.239633 42.408400)))")
-        cf = CropFeature.objects.create(name="Blueberry", mpoly=mp)
-        pr = Pruning.objects.create(cropfeature=cf, completion_percentage=0.1)
+        pr = Pruning.objects.create(pruningevent=self.pe, completion_percentage=0.1)
         self.assertIsNotNone(pr)
-        self.assertEqual(pr.cropfeature, cf)
+        self.assertEqual(pr.pruningevent, self.pe)
         self.assertEqual(pr.completion_percentage, 0.1)
 
 
