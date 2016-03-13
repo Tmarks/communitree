@@ -21,16 +21,16 @@ class CropFeature(models.Model):
     name = models.CharField(max_length=30)
     species = models.ForeignKey("Species", null=True)
     mpoly = models.MultiPolygonField()
+    active_pruningevent = models.ForeignKey("PruningEvent", null=True, related_name="cropfeature_active")
 
 
 class Pruning(models.Model):
-    """A Pruning event, done by a user of the system.
+    """Represents a Pruning session, done by a user of the system.
 
     When a user decides to prune a crop, they will estimate how much of the
     work they've done and tell Communitree. A Pruning is created on that
-    CropFeature to log it.
+    PruningEvent to log it.
     """
-    #cropfeature = models.ForeignKey(CropFeature, on_delete=models.CASCADE)
     pruningevent = models.ForeignKey("PruningEvent", on_delete=models.CASCADE)
     log_time = models.DateTimeField(default=timezone.now)
     completion_percentage = models.DecimalField(max_digits=3, decimal_places=2)

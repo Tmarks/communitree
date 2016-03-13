@@ -26,8 +26,7 @@ class CropFeatureTests(TestCase):
         """Test the simplest creation of a CropFeature.
 
         A crop feature at least needs a name and a MultiPolygon.
-        At present we are going to allow a NULL Species. This test should be 
-        updated if that changes.
+        At present we are going to allow a NULL Species.
         """
 
         cf = CropFeature.objects.create(name="Blueberry", mpoly=self.mp)
@@ -45,6 +44,23 @@ class CropFeatureTests(TestCase):
 
         # but we only need test the species
         self.assertEqual(cfq.species, self.sp)
+
+    def test_set_active_PruningEvent(self):
+        """Make sure we can set a PruningEvent as active on a cropfeature.
+
+        This simply means setting active_pruning_event to a PruningEvent instance...
+        """
+        CropFeature.objects.create(name="Tasty Tomato nearby", mpoly=self.mp, species=self.sp)
+        cfq = CropFeature.objects.all()[0]
+
+        pe = PruningEvent.objects.create(cropfeature=cfq)
+
+        cfq.active_pruningevent = pe
+        cfq.save()
+
+        cfq2 = CropFeature.objects.get()
+
+        self.assertEqual(cfq2.active_pruningevent, pe)
 
 
 class PruningTests(TestCase):
@@ -70,6 +86,9 @@ class PruningTests(TestCase):
         self.assertEqual(pr.pruningevent, self.pe)
         self.assertEqual(pr.completion_percentage, 0.1)
 
+    def tearDown(self):
+        PruningEvent.objects.all().delete()
+
 
 class PruningEventTests(TestCase):
     def setUp(self):
@@ -81,7 +100,6 @@ class PruningEventTests(TestCase):
                           "-71.239509 42.408486, "
                           "-71.239633 42.408400)))")
         self.cf = CropFeature.objects.create(name="Blueberry", mpoly=mp)
-
 
     def test_create_PruningEvent(self):
         """PruningEvent creation, simplest case
