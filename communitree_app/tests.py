@@ -48,7 +48,7 @@ class CropFeatureTests(TestCase):
     def test_set_active_PruningEvent(self):
         """Make sure we can set a PruningEvent as active on a cropfeature.
 
-        This simply means setting active_pruning_event to a PruningEvent instance...
+        This simply means setting active_pruningevent to a PruningEvent instance...
         """
         CropFeature.objects.create(name="Tasty Tomato nearby", mpoly=self.mp, species=self.sp)
         cfq = CropFeature.objects.all()[0]
@@ -122,6 +122,13 @@ class PruningEventTests(TestCase):
         PruningEvent.objects.create(cropfeature=self.cf)
         peq = PruningEvent.objects.all()[0]
         self.assertTrue(timezone.now() - peq.start_time < fiveseconds)
+
+    def test_sum_completion_percentage_of_Prunings(self):
+        PruningEvent.objects.create(cropfeature=self.cf)
+        peq = PruningEvent.objects.all()[0]
+
+        p = [Pruning.objects.create(pruningevent=peq, completion_percentage=x) for x in (0.1, 0.2, 0.3)]
+        self.assertEqual(float(peq.get_completion_percentage()), 0.6)
 
 
 class SpeciesTests(TestCase):

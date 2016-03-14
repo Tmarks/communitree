@@ -39,3 +39,7 @@ class Pruning(models.Model):
 class PruningEvent(models.Model):
     cropfeature = models.ForeignKey(CropFeature, on_delete=models.CASCADE)
     start_time = models.DateTimeField(default=timezone.now)
+
+    def get_completion_percentage(self):
+        return sum([x.completion_percentage for x in self.pruning_set.all()])
+
