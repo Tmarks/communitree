@@ -1,10 +1,11 @@
+{% load staticfiles %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title></title>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <link rel="stylesheet" href="{% static "communitree_app/style.css" %}" />
 </head>
 <body>
 <div id="map"></div>
@@ -41,7 +42,7 @@
 
     //Testing getting some things from the database...
     req = new XMLHttpRequest();
-    req.open('GET', '/querydb', false);
+    req.open('GET', "{% url "communitree_app:querydb" %}", false);
     req.send()
 
     if (req.readyState === XMLHttpRequest.DONE) {
@@ -49,8 +50,8 @@
             console.log(req.responseText);
             res = JSON.parse(req.responseText);
             console.log(res);
-        } else {alert("Oh no.")}
-    } else { alert("Oh darn. " + req.status) }
+        } else {alert("Oh no." + req.status )}
+    } else { alert("Oh darn. " + req.readyState) }
 
     console.log(res.points.length)
     for (var i = 0; i < res.points.length; i++) {
