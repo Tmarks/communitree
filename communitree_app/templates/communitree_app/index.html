@@ -38,25 +38,34 @@
         .openOn(map);
     }
 
-    map.on('click', onMapClick);
+    //map.on('click', onMapClick);
 
     //Testing getting some things from the database...
     req = new XMLHttpRequest();
     req.open('GET', "{% url "communitree_app:querydb" %}", false);
     req.send()
 
+    var res;
     if (req.readyState === XMLHttpRequest.DONE) {
         if (req.status === 200) {
             console.log(req.responseText);
             res = JSON.parse(req.responseText);
+            console.log("printy res")
             console.log(res);
+            console.log("ser ytnirp")
+            console.log(res.cropfeatures)
+            console.log("pirnyt rse")
         } else {alert("Oh no." + req.status )}
     } else { alert("Oh darn. " + req.readyState) }
 
-    console.log(res.points.length)
-    for (var i = 0; i < res.points.length; i++) {
-        var pp = L.marker([res.points[i].lat, res.points[i].lng]).bindPopup(res.points[i].name).addTo(map);
-    }
+    console.log("A");
+    console.log(res.cropfeatures[0]);
+    console.log("B");
+    jcf = JSON.parse(res.cropfeatures[0])
+    console.log(jcf);
+    console.log("B");
+    L.geoJson(jcf).addTo(map)
+
 
 
 
