@@ -34,5 +34,5 @@ class Facemake(View):
 
 class QueryDB(View):
     def get(self, request):
-        return JsonResponse({"cropfeatures" : [cf.mpoly.geojson for cf in CropFeature.objects.all()]})
+        return JsonResponse({"cropfeature" : CropFeature.objects.last().mpoly.geojson})
 

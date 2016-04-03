@@ -6,10 +6,13 @@
     <title></title>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
     <link rel="stylesheet" href="{% static "communitree_app/style.css" %}" />
+    <link rel="stylesheet" href="{% static "communitree_app/CropDisplayControl.css" %}" />
+
 </head>
 <body>
 <div id="map"></div>
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+<script src="{% static "communitree_app/CropDisplayControl.js" %}" ></script>
 <script type="text/javascript">
     var map = L.map('map').setView([42.407956, -71.238515], 13);
 
@@ -20,54 +23,47 @@
         accessToken: 'pk.eyJ1IjoidHJpYW5vcyIsImEiOiJjaWdyMGN3M3EwMXdyc3hrbjI4MHU5d21pIn0.uFMuGs921SdH6mzg6BtN1w'
     }).addTo(map);
 
-    var marker = L.marker([42.407956, -71.238515]).addTo(map);
-    var circle = L.circle([42.407956, -71.238515], 500, {color: 'red', fillColor: '#f03', fillOpacity :0.5}).addTo(map);
+    //var marker = L.marker([42.407956, -71.238515]).addTo(map);
+    //marker.bindPopup("<b>HelloWorld</b><br/>Spleen.").openPopup()
 
-    marker.bindPopup("<b>HelloWorld</b><br/>Spleen.").openPopup()
+    //var circle = L.circle([42.407956, -71.238515], 500, {color: 'red', fillColor: '#f03', fillOpacity :0.5}).addTo(map);
 
-    var popup = L.popup();
         //.setLatLng([42.410315, -71.234377])
         //.setContent("Papa Ginos")
         //.openOn(map);
 
     function onMapClick(e) {
       //alert("You clicked the map at " + e.latlng);
+      var popup = L.popup();
       popup
         .setLatLng(e.latlng)
         .setContent("You clicked the map at " + e.latlng.toString())
         .openOn(map);
     }
-
-    //map.on('click', onMapClick);
+    map.on('click', onMapClick);
 
     //Testing getting some things from the database...
     req = new XMLHttpRequest();
     req.open('GET', "{% url "communitree_app:querydb" %}", false);
-    req.send()
-
+    req.send();
     var res;
     if (req.readyState === XMLHttpRequest.DONE) {
         if (req.status === 200) {
             console.log(req.responseText);
             res = JSON.parse(req.responseText);
-            console.log("printy res")
+            console.log("printy res");
             console.log(res);
-            console.log("ser ytnirp")
-            console.log(res.cropfeatures)
-            console.log("pirnyt rse")
+            console.log("ser ytnirp");
+            console.log(res.cropfeature);
+            console.log("pirnyt rse");
         } else {alert("Oh no." + req.status )}
     } else { alert("Oh darn. " + req.readyState) }
 
-    console.log("A");
-    console.log(res.cropfeatures[0]);
-    console.log("B");
-    jcf = JSON.parse(res.cropfeatures[0])
+    jcf = JSON.parse(res.cropfeature)
     console.log(jcf);
-    console.log("B");
-    L.geoJson(jcf).addTo(map)
+    L.geoJson(jcf).addTo(map);
 
-
-
+    map.addControl(new CropDisplayControl());
 
 </script>
 </body>
