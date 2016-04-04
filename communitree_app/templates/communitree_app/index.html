@@ -13,6 +13,7 @@
 <div id="map"></div>
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 <script src="{% static "communitree_app/CropDisplayControl.js" %}" ></script>
+<script src="{% static "communitree_app/CropFeature.js" %}" ></script>
 <script type="text/javascript">
     var map = L.map('map').setView([42.407956, -71.238515], 13);
 
@@ -50,19 +51,24 @@
     if (req.readyState === XMLHttpRequest.DONE) {
         if (req.status === 200) {
             console.log(req.responseText);
-            res = JSON.parse(req.responseText);
-            console.log("printy res");
-            console.log(res);
-            console.log("ser ytnirp");
-            console.log(res.cropfeature);
-            console.log("pirnyt rse");
+            //res = JSON.parse(req.responseText);
+            //console.log("printy res");
+            //console.log(res);
+            //console.log("ser ytnirp");
+            //console.log(res.cropfeature);
+            //console.log("pirnyt rse");
         } else {alert("Oh no." + req.status )}
     } else { alert("Oh darn. " + req.readyState) }
 
-    jcf = JSON.parse(res.cropfeature)
-    console.log(jcf);
-    L.geoJson(jcf).addTo(map);
+    //jcf = JSON.parse(res.cropfeature)
+    //console.log(jcf);
+    //L.geoJson(jcf).addTo(map);
 
+    cf = new CropFeature(req.responseText);
+    cf.map_me(map);
+    console.log("well look at that")
+    console.log(cf.name)
+    console.log(cf.species)
     map.addControl(new CropDisplayControl());
 
 </script>

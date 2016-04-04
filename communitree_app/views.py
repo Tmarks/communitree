@@ -4,6 +4,7 @@ from django.views.generic import View
 from django.core import serializers
 from django.core.urlresolvers import reverse
 from .models import CropFeature
+import json
 
 from .forms import FaceForm
 
@@ -29,10 +30,16 @@ class Facemake(View):
         form = FaceForm(request.POST)
         # already validated in Viewy.post()?
         # uh
-        return JsonResponse({'foo':'bar'})
+        return JsonResponse({'foo': 'bar'})
 
 
 class QueryDB(View):
     def get(self, request):
-        return JsonResponse({"cropfeature" : CropFeature.objects.last().mpoly.geojson})
+        cf = CropFeature.objects.last()
+        return JsonResponse({"cropfeature": {"name": cf.name,
+                                             "species": cf.species,
+                                             "mpoly": json.loads(cf.mpoly.geojson)
+                                             }
+                             })
+        # return JsonResponse({"cropfeature" : CropFeature.objects.last().mpoly.geojson})
 
