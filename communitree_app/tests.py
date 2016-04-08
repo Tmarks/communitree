@@ -4,6 +4,7 @@ from django.contrib.gis.geos import GEOSGeometry, MultiPolygon
 from django.db import IntegrityError
 from datetime import timedelta
 from django.utils import timezone
+import json
 
 # Create your tests here.
 
@@ -61,6 +62,30 @@ class CropFeatureTests(TestCase):
         cfq2 = CropFeature.objects.get()
 
         self.assertEqual(cfq2.active_pruningevent, pe)
+
+    def test_turn_into_geojson(self):
+        CropFeature.objects.create(name="Tasty Tomato nearby", mpoly=self.mp, species=self.sp)
+        cfq = CropFeature.objects.all()[0]
+
+        """
+        Building expected output --
+        Should be OK to use MultiPolygon.geojson because we're not really
+        testing that. We're testing that other fields are added.
+        We really don't want this to contain anything more than what's needed to
+        display it on the map. Anything else, like the species info and the zone, should
+        probably not be in "properties."
+        The only extra thing we need is the CropFeature's primary key so the
+        browser can get more information from the server when it's clicked.
+        """
+        expected = json.loads(self.mp.geojson)
+        expected["properties"] = {}
+        expected["properties"]["name"] = "Tasty Tomato nearby"
+        expected["properties"]["pk"] = cfq.pk
+
+        # CropFeature.geojson is a property -- we want to test that this returns the expected value.
+        cropfeature_geojson = cfq.geojson
+
+        self.assertEquals(json.loads(cfq.geojson), expected)
 
 
 class PruningTests(TestCase):
