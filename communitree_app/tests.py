@@ -85,7 +85,7 @@ class CropFeatureTests(TestCase):
         # CropFeature.geojson is a property -- we want to test that this returns the expected value.
         cropfeature_geojson = cfq.geojson
 
-        self.assertEquals(json.loads(cfq.geojson), expected)
+        self.assertEquals(cfq.geojson, expected)
 
 
 class PruningTests(TestCase):

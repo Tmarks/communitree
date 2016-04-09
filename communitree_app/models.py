@@ -30,7 +30,7 @@ class CropFeature(models.Model):
         intermediate_geojson["properties"] = {}
         intermediate_geojson["properties"]["name"] = self.name
         intermediate_geojson["properties"]["pk"] = self.pk
-        return json.dumps(intermediate_geojson)
+        return intermediate_geojson
 
 
 class Pruning(models.Model):
