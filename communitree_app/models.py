@@ -2,7 +2,8 @@ from __future__ import unicode_literals
 
 from django.contrib.gis.db import models
 from django.utils import timezone
-from datetime import datetime, timedelta
+import json
+
 
 # Create your models here.
 
@@ -22,6 +23,14 @@ class CropFeature(models.Model):
     species = models.ForeignKey("Species", null=True)
     mpoly = models.MultiPolygonField()
     active_pruningevent = models.ForeignKey("PruningEvent", null=True, related_name="cropfeature_active")
+
+    @property
+    def geojson(self):
+        intermediate_geojson = json.loads(self.mpoly.geojson)
+        intermediate_geojson["properties"] = {}
+        intermediate_geojson["properties"]["name"] = self.name
+        intermediate_geojson["properties"]["pk"] = self.pk
+        return json.dumps(intermediate_geojson)
 
 
 class Pruning(models.Model):
