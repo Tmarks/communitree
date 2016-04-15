@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views.generic import View
-from django.core import serializers
 from django.core.urlresolvers import reverse
 from .models import CropFeature
 import json
@@ -43,3 +42,12 @@ class QueryDB(View):
                              })
         # return JsonResponse({"cropfeature" : CropFeature.objects.last().mpoly.geojson})
 
+
+class JQTesty(View):
+    def get(self, request):
+        print request.GET
+        print type(request.GET['pancreas'])
+        resp = {}
+        for d in request.GET:
+            resp[d.upper()] = request.GET[d]*3
+        return JsonResponse({'eh': resp})

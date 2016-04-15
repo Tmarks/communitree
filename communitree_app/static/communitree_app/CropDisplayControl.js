@@ -7,5 +7,5 @@ var CropDisplayControl = L.Control.extend({
 });
 
 CropDisplayControl.update = function (cf) {
-    this.container.innerHTML = "<h4>" + cf.name + "</h4">
+    this.container.innerHTML = "<h4>" + cf.name + "</h4>";
 }

@@ -11,6 +11,7 @@
 </head>
 <body>
 <div id="map"></div>
+<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 <script src="{% static "communitree_app/CropDisplayControl.js" %}" ></script>
 <script src="{% static "communitree_app/CropFeature.js" %}" ></script>
@@ -44,6 +45,7 @@
     map.on('click', onMapClick);
 
     //Testing getting some things from the database...
+
     req = new XMLHttpRequest();
     req.open('GET', "{% url "communitree_app:querydb" %}", false);
     req.send();
@@ -60,6 +62,18 @@
         } else {alert("Oh no." + req.status )}
     } else { alert("Oh darn. " + req.readyState) }
 
+
+    $.ajax({
+        url: "/communitree/jqtesty",
+        data: {
+            bounds: map.getBounds()
+        }
+    })
+    .done(function( json ) {
+        console.log(json)
+    })
+
+    /*
     //jcf = JSON.parse(res.cropfeature)
     //console.log(jcf);
     //L.geoJson(jcf).addTo(map);
@@ -70,6 +84,10 @@
     console.log(cf.name)
     console.log(cf.species)
     map.addControl(new CropDisplayControl());
+    console.log("bounds")
+    console.log(map.getBounds())
+    console.log("sdnuob")
+    */
 
 </script>
 </body>
