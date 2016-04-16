@@ -25,15 +25,6 @@
         accessToken: 'pk.eyJ1IjoidHJpYW5vcyIsImEiOiJjaWdyMGN3M3EwMXdyc3hrbjI4MHU5d21pIn0.uFMuGs921SdH6mzg6BtN1w'
     }).addTo(map);
 
-    //var marker = L.marker([42.407956, -71.238515]).addTo(map);
-    //marker.bindPopup("<b>HelloWorld</b><br/>Spleen.").openPopup()
-
-    //var circle = L.circle([42.407956, -71.238515], 500, {color: 'red', fillColor: '#f03', fillOpacity :0.5}).addTo(map);
-
-        //.setLatLng([42.410315, -71.234377])
-        //.setContent("Papa Ginos")
-        //.openOn(map);
-
     function onMapClick(e) {
       //alert("You clicked the map at " + e.latlng);
       var popup = L.popup();
@@ -46,6 +37,7 @@
 
     //Testing getting some things from the database...
 
+    /*
     req = new XMLHttpRequest();
     req.open('GET', "{% url "communitree_app:querydb" %}", false);
     req.send();
@@ -53,31 +45,26 @@
     if (req.readyState === XMLHttpRequest.DONE) {
         if (req.status === 200) {
             console.log(req.responseText);
-            //res = JSON.parse(req.responseText);
-            //console.log("printy res");
-            //console.log(res);
-            //console.log("ser ytnirp");
-            //console.log(res.cropfeature);
-            //console.log("pirnyt rse");
         } else {alert("Oh no." + req.status )}
     } else { alert("Oh darn. " + req.readyState) }
+    */
 
-
-    $.ajax({
-        url: "/communitree/jqtesty",
-        data: {
-            bounds: map.getBounds()
+    var aj = $.ajax({
+        url: "/communitree/querydb",
+        data:
+        {
+            bounds: map.getBounds().toBBoxString()
         }
     })
     .done(function( json ) {
         console.log(json)
-    })
+        for (i = 0; i < json.cropfeatures.length; i++)
+        {
+            L.geoJson(json.cropfeatures[i]).addTo(map);
+        }
+    });
 
     /*
-    //jcf = JSON.parse(res.cropfeature)
-    //console.log(jcf);
-    //L.geoJson(jcf).addTo(map);
-
     cf = new CropFeature(req.responseText);
     cf.map_me(map);
     console.log("well look at that")
