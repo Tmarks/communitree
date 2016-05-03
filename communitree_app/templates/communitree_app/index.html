@@ -15,67 +15,6 @@
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
 <script src="{% static "communitree_app/CropDisplayControl.js" %}" ></script>
 <script src="{% static "communitree_app/CropFeature.js" %}" ></script>
-<script type="text/javascript">
-    var map = L.map('map').setView([42.407956, -71.238515], 13);
-
-    L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
-        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-        maxZoom: 18,
-        id: 'trianos.cigr0cuxo01y8thknjt8q30xd',
-        accessToken: 'pk.eyJ1IjoidHJpYW5vcyIsImEiOiJjaWdyMGN3M3EwMXdyc3hrbjI4MHU5d21pIn0.uFMuGs921SdH6mzg6BtN1w'
-    }).addTo(map);
-
-    function onMapClick(e) {
-      //alert("You clicked the map at " + e.latlng);
-      var popup = L.popup();
-      popup
-        .setLatLng(e.latlng)
-        .setContent("You clicked the map at " + e.latlng.toString())
-        .openOn(map);
-    }
-    map.on('click', onMapClick);
-
-    //Testing getting some things from the database...
-
-    /*
-    req = new XMLHttpRequest();
-    req.open('GET', "{% url "communitree_app:querydb" %}", false);
-    req.send();
-    var res;
-    if (req.readyState === XMLHttpRequest.DONE) {
-        if (req.status === 200) {
-            console.log(req.responseText);
-        } else {alert("Oh no." + req.status )}
-    } else { alert("Oh darn. " + req.readyState) }
-    */
-
-    var aj = $.ajax({
-        url: "/communitree/querydb",
-        data:
-        {
-            bounds: map.getBounds().toBBoxString()
-        }
-    })
-    .done(function( json ) {
-        console.log(json)
-        for (i = 0; i < json.cropfeatures.length; i++)
-        {
-            L.geoJson(json.cropfeatures[i]).addTo(map);
-        }
-    });
-
-    /*
-    cf = new CropFeature(req.responseText);
-    cf.map_me(map);
-    console.log("well look at that")
-    console.log(cf.name)
-    console.log(cf.species)
-    map.addControl(new CropDisplayControl());
-    console.log("bounds")
-    console.log(map.getBounds())
-    console.log("sdnuob")
-    */
-
-</script>
+<script src="{% static "communitree_app/CommunitreeMain.js" %}" ></script>
 </body>
 </html>

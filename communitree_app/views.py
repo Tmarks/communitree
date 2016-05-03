@@ -43,18 +43,25 @@ class QueryDB(View):
         objects representing the CropFeatures found:
         """
 
-        # request.GET["bounds"] is the return value from LeafletJS's
+        # request.GET['bounds'] is the return value from LeafletJS's
         # Map.getBounds().toBBoxString().
         # That's 'southwest_lng,southwest_lat,northeast_lng,northeast_lat'
         # So this fits what Polygon.from_bbox expects.
         # ... except I think if the box crosses the International Date Line, or
-        # if it would containa  pole.
-        # TODO: Might be worth figuring this out some day, though no one's growing
-        # any cucumbers in the middle of the pacific or at the south pole
-        print request.GET
+        # if it would contain a pole.
+        # TODO: Might be worth figuring this out some day, though no one's
+        # gonna find any blueberries in the middle of the pacific or at the
+        # South Pole.
         bounds = [float(x) for x in request.GET['bounds'].split(',')]
+
+        print bounds
+        print bounds[0]
+        print bounds[1]
+        print bounds[2]
+        print bounds[3]
         bounds_polygon = Polygon.from_bbox(bounds)
-        cropfeatures_in_view = [cf.geojson for cf in CropFeature.objects.filter(mpoly__touches=bounds_polygon)]
+        print bounds_polygon
+        cropfeatures_in_view = [cf.geojson for cf in CropFeature.objects.filter(mpoly__intersects=bounds_polygon)]
         return JsonResponse({"cropfeatures": cropfeatures_in_view})
 
         """
