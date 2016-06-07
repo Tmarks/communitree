@@ -1,11 +1,11 @@
 var CropDisplayControl = L.Control.extend({
     onAdd : function (map) {
-        var container = L.DomUtil.create('div', 'crop-display-control');
-        container.innerHTML = "<h2>schween</h2>"
-        return container;
+        this.container = L.DomUtil.create('div', 'crop-display-control');
+        this.update();
+        return this.container;
     }
 });
 
 CropDisplayControl.update = function (cf) {
-    this.container.innerHTML = "<h4>" + cf.name + "</h4>";
+    this.container.innerHTML = "<h4>" + (cf ? cf.name : "click a crop to know more about it") + "</h4>";
 }

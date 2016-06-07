@@ -33,7 +33,8 @@ function getCrops() {
         }
     })
     .done(function( json ) {
-        // This will eventually contain
+        // This will eventually contain the keys of CropFeatures no longer in view.
+        // They will be subsequently deleted.
         cfKeysForDeletion = new Set(currentCropFeatures.keys());
         for (i = 0; i < json.cropfeatures.length; i++)
         {
@@ -64,7 +65,6 @@ function getCrops() {
             currentCropFeatures.get(val).unmapMe(map);
             currentCropFeatures.delete(val);
         })
-
 
     });
 }
