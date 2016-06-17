@@ -9,7 +9,7 @@ function CropFeature(cf_json) {
          this.geo = L.geoJson(this.cf_json, {
              onEachFeature: function (feature, layer) {
                 layer.on({
-                          click: cropDisplayControl.update
+                          click: cropClick
                          })
              }
          });
@@ -22,5 +22,14 @@ function CropFeature(cf_json) {
      }
      console.log("made a cropfeature");
 }
+
+var cropClick = function (e) {
+    layer=e.target;
+    console.log("got layer");
+    cf=layer.feature.properties;
+    console.log("layer.feature.properties == " + layer.feature.properties);
+    console.log("layer.feature.properties.name == " + layer.feature.properties.name);
+    console.log("cf.name == " + cf.name);
+};
 
 CropFeature.constructor = CropFeature;
