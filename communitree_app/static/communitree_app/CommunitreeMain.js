@@ -24,6 +24,8 @@ function onMapClick(e) {
 }
 map.on('click', onMapClick);
 
+cropDisplayControl.addTo(map);
+
 function getCrops() {
     var aj = $.ajax({
         url: "/communitree/querydb",
@@ -35,6 +37,7 @@ function getCrops() {
     .done(function( json ) {
         // This will eventually contain the keys of CropFeatures no longer in view.
         // They will be subsequently deleted.
+        // TODO: I might've been tired when I decided to add existing things I might not want to delete to a Set marking them for deletion, and removing the ones I want to keep later on. I think I should change how this works.
         cfKeysForDeletion = new Set(currentCropFeatures.keys());
         for (i = 0; i < json.cropfeatures.length; i++)
         {
@@ -43,7 +46,7 @@ function getCrops() {
             if (!currentCropFeatures.has(cf.pk))
             {
                 currentCropFeatures.set(cf.pk, cf);
-                cf.mapMe(map);
+                cf.mapMe(map, cropDisplayControl);
             }
             else {
                 // The CropFeature is already in the Map of current features displayed.
@@ -56,7 +59,6 @@ function getCrops() {
         console.log("currentCropFeatures");
         console.log(currentCropFeatures);
         console.log("end currentCropFeatures");
-
         console.log("cfKeysForDeletion");
         console.log(cfKeysForDeletion);
         console.log("end cfKeysForDeletion");
@@ -68,4 +70,3 @@ function getCrops() {
 
     });
 }
-
