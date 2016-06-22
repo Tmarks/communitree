@@ -70,17 +70,23 @@ class CropFeatureTests(TestCase):
         """
         Building expected output --
         Should be OK to use MultiPolygon.geojson because we're not really
-        testing that. We're testing that other fields are added.
-        We really don't want this to contain anything more than what's needed to
+        testing that. We're testing that the Feature is properly built.
+        "Feature" is as defined in the GeoJSON specification. http://geojson.org/geojson-spec.html#feature-objects
+        We really don't want the feature properties to contain anything more than what's needed to
         display it on the map. Anything else, like the species info and the zone, should
         probably not be in "properties."
         The only extra thing we need is the CropFeature's primary key so the
         browser can get more information from the server when it's clicked.
         """
-        expected = json.loads(self.mp.geojson)
-        expected["properties"] = {}
-        expected["properties"]["name"] = "Tasty Tomato nearby"
-        expected["properties"]["pk"] = cfq.pk
+        expected = {
+            "type": "Feature",
+            "id": cfq.pk,
+            "geometry": json.loads(self.mp.geojson),
+            "properties": {
+                "name": "Tasty Tomato nearby",
+                "pk": cfq.pk
+            }
+        }
 
         # CropFeature.geojson is a property -- we want to test that this returns the expected value.
         cropfeature_geojson = cfq.geojson
