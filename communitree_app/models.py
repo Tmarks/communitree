@@ -26,10 +26,15 @@ class CropFeature(models.Model):
 
     @property
     def geojson(self):
-        intermediate_geojson = json.loads(self.mpoly.geojson)
-        intermediate_geojson["properties"] = {}
-        intermediate_geojson["properties"]["name"] = self.name
-        intermediate_geojson["properties"]["pk"] = self.pk
+        intermediate_geojson = {
+            "type": "Feature",
+            "id": self.pk,
+            "geometry": json.loads(self.mpoly.geojson),
+            "properties": {
+                "name": self.name,
+                "pk": self.pk
+            }
+        }
         return intermediate_geojson
 
 
