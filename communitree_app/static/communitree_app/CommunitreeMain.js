@@ -67,6 +67,5 @@ function getCrops() {
             currentCropFeatures.get(val).unmapMe(map);
             currentCropFeatures.delete(val);
         })
-
     });
 }

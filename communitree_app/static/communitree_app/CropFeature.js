@@ -8,12 +8,11 @@ function CropFeature(cf_json) {
      this.mapMe = function (leaflet_map, cropDisplayControl) {
          this.geo = L.geoJson(this.cf_json, {
              onEachFeature: function (feature, layer) {
-                layer.on({
-                          click: cropClick
-                         })
+                layer.on({ click: cropClick });
              }
          });
          this.geo.addTo(leaflet_map);
+         this.geo.cropFeature = this;
          return this;
      }
 
@@ -25,11 +24,7 @@ function CropFeature(cf_json) {
 
 var cropClick = function (e) {
     layer=e.target;
-    console.log("got layer");
     cf=layer.feature.properties;
-    console.log("layer.feature.properties == " + layer.feature.properties);
-    console.log("layer.feature.properties.name == " + layer.feature.properties.name);
-    console.log("cf.name == " + cf.name);
 };
 
 CropFeature.constructor = CropFeature;
