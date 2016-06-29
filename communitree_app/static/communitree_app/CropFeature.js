@@ -25,6 +25,7 @@ function CropFeature(cf_json) {
 var cropClick = function (e) {
     layer=e.target;
     cf=layer.feature.properties;
+    cropDisplayControl.update(cf);
 };
 
 CropFeature.constructor = CropFeature;

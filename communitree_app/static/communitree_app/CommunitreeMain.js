@@ -13,6 +13,7 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
     accessToken: 'pk.eyJ1IjoidHJpYW5vcyIsImEiOiJjaWdyMGN3M3EwMXdyc3hrbjI4MHU5d21pIn0.uFMuGs921SdH6mzg6BtN1w'
 }).addTo(map);
 
+cropDisplayControl.addTo(map);
 
 function onMapClick(e) {
   //alert("You clicked the map at " + e.latlng);
@@ -21,10 +22,10 @@ function onMapClick(e) {
     .setLatLng(e.latlng)
     .setContent("You clicked the map at " + e.latlng.toString())
     .openOn(map);
+    cropDisplayControl.update();
 }
-map.on('click', onMapClick);
 
-cropDisplayControl.addTo(map);
+map.on('click', onMapClick);
 
 function getCrops() {
     var aj = $.ajax({
