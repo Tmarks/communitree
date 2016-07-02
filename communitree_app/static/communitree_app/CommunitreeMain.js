@@ -1,3 +1,7 @@
+//Trying browserify to use a leaflet plugin, leaflet-draw. I get the feeling it's not going to work so well in Django.
+//And it's another step to perform every time I edit this code. I shouldn't have to deal with that. This is Javascript.
+//var leaflet_draw = require('leaflet-draw');
+
 // Used to store the currently displayed crops so that we can get more info
 // about them if a user clicks one.
 var currentCropFeatures = new Map();
@@ -5,6 +9,33 @@ var currentCropFeatures = new Map();
 var map = L.map('map').on('load', getCrops);
 map.setView([42.407956, -71.238515], 13);
 map.on('moveend', getCrops);
+
+
+
+var drawnItems = new L.FeatureGroup();
+map.addLayer(drawnItems);
+var drawControl = new L.Control.Draw({
+    edit: {
+        featureGroup: drawnItems
+    },
+    draw: {
+        polyline: false,
+        marker: false
+    }
+});
+map.addControl(drawControl);
+
+map.on('draw:created', function (e) {
+    var type = e.layerType,
+        layer = e.layer;
+
+    if (type === 'marker') {
+        // Do marker specific actions
+    }
+
+    // Do whatever else you need to. (save to db, add to map etc)
+    map.addLayer(layer);
+});
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -17,15 +48,10 @@ cropDisplayControl.addTo(map);
 
 function onMapClick(e) {
   //alert("You clicked the map at " + e.latlng);
-  var popup = L.popup();
-  popup
-    .setLatLng(e.latlng)
-    .setContent("You clicked the map at " + e.latlng.toString())
-    .openOn(map);
     cropDisplayControl.update();
 }
 
-map.on('click', onMapClick);
+//map.on('click', onMapClick);
 
 function getCrops() {
     var aj = $.ajax({
