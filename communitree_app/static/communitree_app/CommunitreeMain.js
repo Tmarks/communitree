@@ -23,7 +23,9 @@ var drawControl = new L.Control.Draw({
         marker: false
     }
 });
-map.addControl(drawControl);
+//map.addControl(drawControl);
+
+
 
 map.on('draw:created', function (e) {
     var type = e.layerType,
