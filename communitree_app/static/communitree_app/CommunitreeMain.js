@@ -27,17 +27,6 @@ var drawControl = new L.Control.Draw({
 
 
 
-map.on('draw:created', function (e) {
-    var type = e.layerType,
-        layer = e.layer;
-
-    if (type === 'marker') {
-        // Do marker specific actions
-    }
-
-    // Do whatever else you need to. (save to db, add to map etc)
-    map.addLayer(layer);
-});
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -53,7 +42,7 @@ function onMapClick(e) {
     cropDisplayControl.update();
 }
 
-//map.on('click', onMapClick);
+map.on('click', onMapClick);
 
 function getCrops() {
     var aj = $.ajax({
