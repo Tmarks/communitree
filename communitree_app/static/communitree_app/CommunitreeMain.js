@@ -38,7 +38,10 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={
 cropDisplayControl.addTo(map);
 
 function onMapClick(e) {
-  //alert("You clicked the map at " + e.latlng);
+    var poppy = L.popup()
+        .setLatLng(e.latlng)
+        .setContent("You clicked the map at " + e.latlng)
+        .openOn(map);
     cropDisplayControl.update();
 }
 

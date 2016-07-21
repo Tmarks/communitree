@@ -1,4 +1,3 @@
-
 function CropFeature(cf_json) {
      this.cf_json = cf_json;
      this.pk = this.cf_json.properties.pk;
@@ -25,6 +24,7 @@ function CropFeature(cf_json) {
 var cropClick = function (e) {
     layer=e.target;
     cf=layer.feature.properties;
+    e.target.bindPopup(cf.name);
     cropDisplayControl.update(cf);
 };
 
