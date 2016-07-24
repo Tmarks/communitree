@@ -35,5 +35,4 @@ cropDisplayControl.update = function (cropProps) {
     this.addCropLink.innerHTML = "Map out a new crop...";
     this._div.appendChild(this.addCropLink);
 
-
 };
