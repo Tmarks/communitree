@@ -29,8 +29,7 @@ cropDisplayControl.onAdd = function (map) {
 
 cropDisplayControl.update = function (cropProps) {
     this._div.innerHTML = "<h4>" + (cropProps ? cropProps.name : "Click a crop to know more about it.") + "</h4><br />" +
-    "<br />" +
-    "<p contenteditable=\"true\">Lorem ipsum dolor sit amet</p><br />";
+    "<br />";
 
     this.addCropLink.innerHTML = "Map out a new crop...";
     this._div.appendChild(this.addCropLink);

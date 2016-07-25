@@ -1,3 +1,14 @@
+/*
+CropFeature = Backbone.Model.extend({
+    defaults: {
+        cf_json: null,
+        pk: -1,
+        name: ''
+        species: ''
+    }
+});
+
+*/
 function CropFeature(cf_json) {
      this.cf_json = cf_json;
      this.pk = this.cf_json.properties.pk;
