@@ -14,25 +14,6 @@ class Index(View):
         return render(request, "communitree_app/index.html")
 
 
-class Viewy(View):
-    def get(self, request):
-        form = FaceForm()
-        return render(request, "communitree_app/face.html", {'form': form})
-
-    def post(self, request):
-        form = FaceForm(request.POST)
-        if form.is_valid():
-            return HttpResponseRedirect(reverse("communitree_app:facemake"))
-
-
-class Facemake(View):
-    def get(self, request):
-        form = FaceForm(request.POST)
-        # already validated in Viewy.post()?
-        # uh
-        return JsonResponse({'foo': 'bar'})
-
-
 class QueryDB(View):
     def get(self, request):
         """
