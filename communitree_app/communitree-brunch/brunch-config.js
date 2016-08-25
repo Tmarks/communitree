@@ -8,5 +8,9 @@ module.exports = {
 
   paths: {
     public: '../static/communitree_app'
+  },
+
+  plugins: {
+    autoReload: {enabled: false}
   }
 }

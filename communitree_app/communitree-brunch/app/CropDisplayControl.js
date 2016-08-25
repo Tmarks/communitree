@@ -1,4 +1,6 @@
+var L = require('leaflet')
 var cropDisplayControl = L.control();
+var $ = require('jquery');
 
 
 
@@ -35,3 +37,5 @@ cropDisplayControl.update = function (cropProps) {
     this._div.appendChild(this.addCropLink);
 
 };
+
+module.exports=cropDisplayControl;

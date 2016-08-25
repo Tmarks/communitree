@@ -1,3 +1,5 @@
-document.addEventListener('DOMContentLoaded', function() {
-  // do your setup here
+var $ = require('jquery')
+
+$('document').ready(function() {
+  require('communitree').init();
 });

@@ -68,3 +68,6 @@ target/
 
 #my notes
 whereami.txt
+
+#the static folder. Added after I started using Brunch. Brunch now builds what goes into this folder and there isn't a good reason I see right now to add what's in here to the repository.
+communitree_app/static/communitree_app/

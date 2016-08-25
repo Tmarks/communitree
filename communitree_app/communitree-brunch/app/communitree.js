@@ -1,4 +1,11 @@
-$(document).ready(function() {
+module='communitree'
+exports.init = function() {
+    var L = require('leaflet');
+    var L_draw = require('leaflet-draw');
+    var $ = require('jquery');
+    var cropDisplayControl = require('CropDisplayControl');
+    var CropFeature = require('CropFeature');
+
     // Used to store the currently displayed crops so that we can get more info
     // about them if a user clicks one.
     var currentCropFeatures = new Map(); //this is a javascript key-value map, not a leaflet map. i was confused for
@@ -88,4 +95,4 @@ $(document).ready(function() {
             })
         });
     }
-}); //end $(document).ready()
+};

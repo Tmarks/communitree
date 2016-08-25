@@ -40,3 +40,5 @@ var cropClick = function (e) {
 };
 
 CropFeature.constructor = CropFeature;
+
+module.exports=CropFeature;
