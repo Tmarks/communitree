@@ -1,3 +1,4 @@
+cropDisplayControl = require('CropDisplayControl');
 /*
 CropFeature = Backbone.Model.extend({
     defaults: {
