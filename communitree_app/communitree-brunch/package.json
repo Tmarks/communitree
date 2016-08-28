@@ -1,7 +1,7 @@
 {
-  "name": "brunch-app",
-  "description": "Description",
-  "author": "Your Name",
+  "name": "communitree-brunch",
+  "description": "brunch for communitree.",
+  "author": "Tristan Marks",
   "version": "0.1.0",
   "repository": {
     "type": "git",
