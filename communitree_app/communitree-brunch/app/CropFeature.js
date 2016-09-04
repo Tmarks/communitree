@@ -1,15 +1,19 @@
-cropDisplayControl = require('CropDisplayControl');
-/*
+Backbone = require("backbone");
+//cropDisplayControl = require("CropDisplayControl");
+
 CropFeature = Backbone.Model.extend({
     defaults: {
         cf_json: null,
         pk: -1,
-        name: ''
+        name: '',
         species: ''
     }
 });
 
-*/
+
+
+/*
+
 function CropFeature(cf_json) {
      this.cf_json = cf_json;
      this.pk = this.cf_json.properties.pk;
@@ -41,5 +45,6 @@ var cropClick = function (e) {
 };
 
 CropFeature.constructor = CropFeature;
+*/
 
-module.exports=CropFeature;
+exports.CropFeature = CropFeature;

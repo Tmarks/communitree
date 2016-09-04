@@ -1,5 +1,6 @@
 module='communitree'
 exports.init = function() {
+    var CropFeatures = require('CropFeatures').CropFeatures
     var L = require('leaflet');
     var leaflet_draw = require('leaflet-draw');
     var $ = require('jquery');

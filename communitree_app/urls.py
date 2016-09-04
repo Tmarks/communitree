@@ -6,4 +6,5 @@ app_name="communitree_app"
 urlpatterns = [
     url(r'^$', views.Index.as_view(), name="index"),
     url(r'^querydb/$', views.QueryDB.as_view(), name="querydb"),
+    url(r'^crops/(?P<id>[0-9]*)$', views.Crops.as_view(), name="crops"),
 ]

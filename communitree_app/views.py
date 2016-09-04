@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, Http404
 from django.views.generic import View
 from django.core.urlresolvers import reverse
 from .models import CropFeature
@@ -55,3 +55,16 @@ class QueryDB(View):
         # return JsonResponse({"cropfeature" : CropFeature.objects.last().mpoly.geojson})
         """
 
+class Crops(View):
+    def get(self, request, **kwargs):
+        if 'id' in kwargs and kwargs['id'] != '':
+            try:
+                return JsonResponse({"cropfeatures": [CropFeature.objects.get(id=kwargs['id']).geojson]})
+            except CropFeature.DoesNotExist:
+                raise Http404("The requested crop does not exist.")
+        else:
+            #TODO: I'm not sure what to do about this. For now, I'm just going to give it SOMEthing to do.
+            #As of the moment though, I don't have a use case for getting CropFeatures in some order they happen to
+            #come in when retrieved.
+            return JsonResponse({"cropfeatures": [cf.geojson for cf in CropFeature.objects.all()[:100]]})
+    
