@@ -3,10 +3,10 @@ Backbone = require("backbone");
 
 CropFeature = Backbone.Model.extend({
     defaults: {
-        cf_json: null,
-        pk: -1,
-        name: '',
-        species: ''
+        geometry: null,
+        id: -1,
+        type: '',
+        properties: {}
     }
 });
 

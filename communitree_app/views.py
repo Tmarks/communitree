@@ -59,12 +59,12 @@ class Crops(View):
     def get(self, request, **kwargs):
         if 'id' in kwargs and kwargs['id'] != '':
             try:
-                return JsonResponse({"cropfeatures": [CropFeature.objects.get(id=kwargs['id']).geojson]})
+                return JsonResponse(CropFeature.objects.get(id=kwargs['id']).geojson)
             except CropFeature.DoesNotExist:
                 raise Http404("The requested crop does not exist.")
         else:
             #TODO: I'm not sure what to do about this. For now, I'm just going to give it SOMEthing to do.
             #As of the moment though, I don't have a use case for getting CropFeatures in some order they happen to
             #come in when retrieved.
-            return JsonResponse({"cropfeatures": [cf.geojson for cf in CropFeature.objects.all()[:100]]})
+            return JsonResponse([cf.geojson for cf in CropFeature.objects.all()[:100]], safe=False)
     

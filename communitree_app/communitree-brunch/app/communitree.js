@@ -1,11 +1,11 @@
 module='communitree'
 exports.init = function() {
-    var CropFeatures = require('CropFeatures').CropFeatures
+    var CropFeatures = require('CropFeatures').CropFeatures;
+    var CropFeature = require('CropFeature').CropFeature;
     var L = require('leaflet');
     var leaflet_draw = require('leaflet-draw');
     var $ = require('jquery');
     var cropDisplayControl = require('CropDisplayControl');
-    var CropFeature = require('CropFeature');
 
     // Used to store the currently displayed crops so that we can get more info
     // about them if a user clicks one.
