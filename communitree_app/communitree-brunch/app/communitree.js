@@ -5,6 +5,7 @@ exports.init = function() {
     var L = require('leaflet');
     var leaflet_draw = require('leaflet-draw');
     var $ = require('jquery');
+    var _ = require('underscore');
     var cropDisplayControl = require('CropDisplayControl');
 
     // Used to store the currently displayed crops so that we can get more info
@@ -55,7 +56,7 @@ exports.init = function() {
 
     function getCrops() {
         var aj = $.ajax({
-            url: "/communitree/querydb",
+            url: "/communitree/crops",
             data:
             {
                 bounds: map.getBounds().toBBoxString()
@@ -66,10 +67,16 @@ exports.init = function() {
             // They will be subsequently deleted.
             // TODO: I might've been tired when I decided to add existing things I might not want to delete to a Set marking them for deletion, and removing the ones I want to keep later on. I think I should change how this works.
             cfKeysForDeletion = new Set(currentCropFeatures.keys());
-            for (i = 0; i < json.cropfeatures.length; i++)
+            console.log("Oh my god, plants!");
+            modelsInView = _.each(json, function(cf) { return new CropFeature(cf); })
+            console.log(modelsInView);
+            console.log("oH MY GOD, PLANTS!");
+            colInView = new CropFeatures(modelsInView);
+            console.log(colInView);
+            for (i = 0; i < json.length; i++)
             {
-                //L.geoJson(json.cropfeatures[i]).addTo(map);
-                cf = new CropFeature(json.cropfeatures[i]);
+                //L.geoJson(json.addTo(map);
+                cf = new CropFeature(json[i]);
                 if (!currentCropFeatures.has(cf.pk))
                 {
                     currentCropFeatures.set(cf.pk, cf);
