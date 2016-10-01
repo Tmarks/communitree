@@ -1,7 +1,7 @@
-Backbone = require("backbone");
+var Backbone = require("backbone");
 //cropDisplayControl = require("CropDisplayControl");
 
-CropFeature = Backbone.Model.extend({
+var CropFeatureModel = Backbone.Model.extend({
     defaults: {
         geometry: null,
         id: -1,
@@ -47,4 +47,4 @@ var cropClick = function (e) {
 CropFeature.constructor = CropFeature;
 */
 
-exports.CropFeature = CropFeature;
+exports.CropFeatureModel = CropFeatureModel;

@@ -1,7 +1,8 @@
 module='communitree'
-exports.init = function() {
+var map = null;
+function init() {
     var CropFeatures = require('CropFeatures').CropFeatures;
-    var CropFeature = require('CropFeature').CropFeature;
+    var CropFeatureModel = require('CropFeatureModel').CropFeatureModel;
     var L = require('leaflet');
     var leaflet_draw = require('leaflet-draw');
     var $ = require('jquery');
@@ -13,10 +14,9 @@ exports.init = function() {
     var currentCropFeatures = new Map(); //this is a javascript key-value map, not a leaflet map. i was confused for
                                          //a second because i'm tired
 
-    var map = L.map('map').on('load', getCrops);
+    map = L.map('map').on('load', getCrops);
     map.setView([42.407956, -71.238515], 13);
     map.on('moveend', getCrops);
-
 
 
     var drawnItems = new L.FeatureGroup();
@@ -54,6 +54,20 @@ exports.init = function() {
 
     map.on('click', onMapClick);
 
+    //collectionInView is an instance of the CropFeatures collection. It holds cropfeatures currently in the view.
+    //It's updated after every call of getCrops() by calling Collection.set(models).
+    var collectionInView = new CropFeatures();
+    collectionInView.on("add", function(){console.log("A model was added to collectionInView")});
+    //collectionInView.on("remove", function(m, c, o){console.log("something got removed...");console.log(m);});
+    /*collectionInView = new CropFeatures(null, {
+        events: {
+            "add": function() {
+                       console.log("A model was added to collectionInView");
+            }
+        }
+    });
+    */
+
     function getCrops() {
         var aj = $.ajax({
             url: "/communitree/crops",
@@ -63,44 +77,16 @@ exports.init = function() {
             }
         })
         .done(function( json ) {
-            // This will eventually contain the keys of CropFeatures no longer in view.
-            // They will be subsequently deleted.
-            // TODO: I might've been tired when I decided to add existing things I might not want to delete to a Set marking them for deletion, and removing the ones I want to keep later on. I think I should change how this works.
-            cfKeysForDeletion = new Set(currentCropFeatures.keys());
-            console.log("Oh my god, plants!");
-            modelsInView = _.each(json, function(cf) { return new CropFeature(cf); })
+            modelsInView = _.map(json, function(cf) { return new CropFeatureModel(cf); });
             console.log(modelsInView);
-            console.log("oH MY GOD, PLANTS!");
-            colInView = new CropFeatures(modelsInView);
-            console.log(colInView);
-            for (i = 0; i < json.length; i++)
-            {
-                //L.geoJson(json.addTo(map);
-                cf = new CropFeature(json[i]);
-                if (!currentCropFeatures.has(cf.pk))
-                {
-                    currentCropFeatures.set(cf.pk, cf);
-                    cf.mapMe(map, cropDisplayControl);
-                }
-                else {
-                    // The CropFeature is already in the Map of current features displayed.
-                    // So remove it from our Set.
-                    // By the end of the loop, this will contain the PKs of CropFeatures
-                    // that were displayed and are now out of view.
-                    cfKeysForDeletion.delete(cf.pk);
-                }
-            }
-            console.log("currentCropFeatures");
-            console.log(currentCropFeatures);
-            console.log("end currentCropFeatures");
-            console.log("cfKeysForDeletion");
-            console.log(cfKeysForDeletion);
-            console.log("end cfKeysForDeletion");
-
-            cfKeysForDeletion.forEach(function (val, a2, a3) {
-                currentCropFeatures.get(val).unmapMe(map);
-                currentCropFeatures.delete(val);
-            })
+            _.each(modelsInView, function(m) { 
+                                                 m.on("add", function(){console.log("i got added to collectionInView");});
+                                                 m.on("remove", function(){console.log("i got removed...");});
+                                             }
+            );
+            collectionInView.set(modelsInView);
         });
     }
 };
+exports.init = init;
+exports.map = map;
