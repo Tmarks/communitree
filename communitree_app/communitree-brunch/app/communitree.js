@@ -1,5 +1,5 @@
 module='communitree'
-var map = null;
+var communitree_map;
 function init() {
     var CropFeatures = require('CropFeatures').CropFeatures;
     var CropFeatureModel = require('CropFeatureModel').CropFeatureModel;
@@ -8,19 +8,20 @@ function init() {
     var $ = require('jquery');
     var _ = require('underscore');
     var cropDisplayControl = require('CropDisplayControl');
+    var CropsInMapView = require('CropsInMapView');
 
     // Used to store the currently displayed crops so that we can get more info
     // about them if a user clicks one.
     var currentCropFeatures = new Map(); //this is a javascript key-value map, not a leaflet map. i was confused for
                                          //a second because i'm tired
 
-    map = L.map('map').on('load', getCrops);
-    map.setView([42.407956, -71.238515], 13);
-    map.on('moveend', getCrops);
+    communitree_map = L.map('map').on('load', getCrops);
+    communitree_map.setView([42.407956, -71.238515], 13);
+    communitree_map.on('moveend', getCrops);
 
 
     var drawnItems = new L.FeatureGroup();
-    map.addLayer(drawnItems);
+    communitree_map.addLayer(drawnItems);
     var drawControl = new L.Control.Draw({
         edit: {
             featureGroup: drawnItems
@@ -30,8 +31,7 @@ function init() {
             marker: false
         }
     });
-    //map.addControl(drawControl);
-
+    //communitree_map.addControl(drawControl);
 
 
 
@@ -40,25 +40,25 @@ function init() {
         maxZoom: 18,
         id: 'trianos.cigr0cuxo01y8thknjt8q30xd',
         accessToken: 'pk.eyJ1IjoidHJpYW5vcyIsImEiOiJjaWdyMGN3M3EwMXdyc3hrbjI4MHU5d21pIn0.uFMuGs921SdH6mzg6BtN1w'
-    }).addTo(map);
+    }).addTo(communitree_map);
 
-    cropDisplayControl.addTo(map);
+    cropDisplayControl.addTo(communitree_map);
 
     function onMapClick(e) {
         //var poppy = L.popup()
             //.setLatLng(e.latlng)
             //.setContent("You clicked the map at " + e.latlng)
-            //.openOn(map);
+            //.openOn(communitree_map);
         cropDisplayControl.update();
     }
 
-    map.on('click', onMapClick);
+    communitree_map.on('click', onMapClick);
 
     //collectionInView is an instance of the CropFeatures collection. It holds cropfeatures currently in the view.
     //It's updated after every call of getCrops() by calling Collection.set(models).
     var collectionInView = new CropFeatures();
-    collectionInView.on("add", function(){console.log("A model was added to collectionInView")});
-    //collectionInView.on("remove", function(m, c, o){console.log("something got removed...");console.log(m);});
+    collectionInView.on("add", function(m){console.log("A model was added to collectionInView:" + m)});
+    collectionInView.on("remove", function(m){console.log("something got removed..." + m);});
     /*collectionInView = new CropFeatures(null, {
         events: {
             "add": function() {
@@ -73,14 +73,14 @@ function init() {
             url: "/communitree/crops",
             data:
             {
-                bounds: map.getBounds().toBBoxString()
+                bounds: communitree_map.getBounds().toBBoxString()
             }
         })
         .done(function( json ) {
             modelsInView = _.map(json, function(cf) { return new CropFeatureModel(cf); });
             console.log(modelsInView);
-            _.each(modelsInView, function(m) { 
-                                                 m.on("add", function(){console.log("i got added to collectionInView");});
+            _.each(modelsInView, function(m) {
+                                                 m.on("add", function(){new CropsInMapView({model: this}).render();console.log("This didn't work");})
                                                  m.on("remove", function(){console.log("i got removed...");});
                                              }
             );
@@ -89,4 +89,4 @@ function init() {
     }
 };
 exports.init = init;
-exports.map = map;
+exports.communitree_map = communitree_map;
