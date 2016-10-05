@@ -5,9 +5,8 @@ var leaflet_draw = require('leaflet-draw');
 var $ = require('jquery');
 var _ = require('underscore');
 var cropDisplayControl = require('CropDisplayControl');
-var map = require('communitree').map;
-console.log("oh");
-console.log(map);
+var communitree_map = require('CommunitreeMap');
+console.log("CropsInMapView -- communitree_map: " + communitree_map);
 
 var cropClick = function (e) {
     layer=e.target;
@@ -18,25 +17,27 @@ var cropClick = function (e) {
 
 var CropsInMapView = Backbone.View.extend({
 
-    initialize: function() {
-        this.listenTo(
+    //initialize: function() {
+    //    this.listenTo(
 
     render: function() {
-         var geo = L.geoJson(this.model.attributes, {
-             onEachFeature: function (feature, layer) {
-                layer.on({ click: cropClick });
-             }
-         });
-         console.log(map);
-         geo.addTo(map);
-    }
+        console.log("call CropsInMapView.render");
+    },
 
     mapFeature: function(cropFeature) {
         console.log("call mapFeature");
-    }
+        /*var geo = L.geoJson(this.model.attributes, {
+            onEachFeature: function (feature, layer) {
+               layer.on({ click: cropClick });
+            }
+        });
+        geo.addTo(communitree_map);
+        */
+    },
 
     unmapFeature: function (cropFeature) {
-        leaflet_map.removeLayer(this.geo);
+        console.log("call mapFeature");
+        //communitree_map.removeLayer(this.geo);
     }
 });
 
