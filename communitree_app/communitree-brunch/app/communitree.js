@@ -22,17 +22,12 @@ function init() {
     //collectionInView is an instance of the CropFeatures collection. It holds cropfeatures currently in the view.
     //It's updated after every call of getCrops() by calling Collection.set(models).
     var collectionInView = new CropFeatures();
-    collectionInView.on("add", function(m){console.log("A model was added to collectionInView:" + m)});
-    collectionInView.on("remove", function(m){console.log("something got removed..." + m);});
-    collectionInView.on("update", function(m){console.log("We am the update.");});
-    /*collectionInView = new CropFeatures(null, {
-        events: {
-            "add": function() {
-                       console.log("A model was added to collectionInView");
-            }
-        }
-    });
-    */
+    var cropsInMapView = new CropsInMapView();
+    collectionInView.on("add", function(m){console.log("Adding " + m.id); cropsInMapView.mapFeature(m);});
+    collectionInView.on("remove", function(m){console.log("something got removed..." + m); cropsInMapView.unmapFeature(m)});
+    //collectionInView.on("update", function(c){console.log("We am the update.");});
+
+    //m.on("add", function(){new CropsInMapView({model: this}).render();})
 
     function getCrops() {
         var aj = $.ajax({
@@ -45,13 +40,13 @@ function init() {
             modelsInView = _.map(json, function(cf) { return new CropFeatureModel(cf); });
             console.log('modelsInView: ' + modelsInView);
             _.each(modelsInView, function(m) {
-                                                 m.on("add", function(){new CropsInMapView({model: this}).render();})
+                                                 m.on("add", function(){console.log("modelInView added, " + this.id);})
                                              }
             );
             collectionInView.set(modelsInView);
         });
     }
-    communitree_map.on('load', getCrops);
+    //communitree_map.on('load', getCrops);
     communitree_map.on('moveend', getCrops);
 
     cropDisplayControl.addTo(communitree_map);
