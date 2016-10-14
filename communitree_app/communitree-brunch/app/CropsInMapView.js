@@ -24,7 +24,6 @@ var MappedCropView = Backbone.View.extend({
     },
 
     initialize: function() {
-        var myCropClick = this.cropClick;
         var thisView=this;
         this.geoJson = L.geoJson(this.model.attributes, {
             onEachFeature: function (feature, layer) {
@@ -45,7 +44,7 @@ var CropsInMapView = Backbone.View.extend({
         
 
     render: function() {
-        console.log("call CropsInMapView.render");
+        //console.log("call CropsInMapView.render");
     },
 
     mapFeature: function(model) {

@@ -6,11 +6,9 @@ var CropDisplayView = Backbone.View.extend({
     
     el: $('#interact'),
 
-    template: _.template("Hello <%= model.attributes.properties.name %>"),
+    template: _.template("<p>Hello <%= model.attributes.properties.name %></p>"),
 
     render: function() {
-        console.log(this.el.innerHTML);
-        console.log(this.model);
         this.$el.html(this.template({model: this.model}));
         return this;
     }

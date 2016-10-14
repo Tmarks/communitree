@@ -20,7 +20,8 @@ html, body  {
     top: 0;
     right: 0;
     bottom: 0;
-    width: 20%;
-    background: #eee;
+    width: 30%;
+    background: #e7f4dc;
     overflow-y: auto;
+    font-family: Arial;
 }

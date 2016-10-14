@@ -22,16 +22,15 @@ function init() {
     //collectionInView is an instance of the CropFeatures collection. It holds cropfeatures currently in the view.
     //It's updated after every call of getCrops() by calling Collection.set(models).
     var collectionInView = new CropFeatures();
-    var cropsInMapView = new CropsInMapView();
     collectionInView.on("add", function(m){console.log("Adding " + m.id); cropsInMapView.mapFeature(m);});
     collectionInView.on("remove", function(m){console.log("something got removed..." + m); cropsInMapView.unmapFeature(m)});
     //collectionInView.on("update", function(c){console.log("We am the update.");});
 
-    //m.on("add", function(){new CropsInMapView({model: this}).render();})
+    var cropsInMapView = new CropsInMapView();
 
     function getCrops() {
         var aj = $.ajax({
-            url: "/communitree/crops",
+            url: "/communitree/cropsbybounds",
             data:
             {
                 bounds: communitree_map.getBounds().toBBoxString()
