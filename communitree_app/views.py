@@ -6,10 +6,14 @@ from .models import CropFeature
 import json
 from django.contrib.gis.geos import Polygon
 
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
+
 from .forms import FaceForm
 
 
 class Index(View):
+    @method_decorator(ensure_csrf_cookie)
     def get(self, request):
         return render(request, "communitree_app/index.html")
 
