@@ -6,7 +6,10 @@ var CropFeatureModel = Backbone.Model.extend({
         geometry: null,
         id: -1,
         type: '',
-        properties: {}
+        properties: {},
+        recent_prunings: [],
+        pruning_event: false,
+        species: ''
     }
 });
 

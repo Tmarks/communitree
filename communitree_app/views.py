@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, Http404
 from django.views.generic import View
 from django.core.urlresolvers import reverse
+from django.core import serializers
 from .models import CropFeature
 import json
 from django.contrib.gis.geos import Polygon
@@ -22,7 +23,29 @@ class Crops(View):
     def get(self, request, **kwargs):
         if 'id' in kwargs and kwargs['id'] != '':
             try:
-                return JsonResponse(CropFeature.objects.get(id=kwargs['id']).geojson)
+                crop = CropFeature.objects.get(id=kwargs['id'])
+                crop_json = crop.geojson
+
+                #This is easier to handle on the client side. We need strings
+                #to display, so why not just send empty strings from here if
+                #that's what needs to happen?
+                crop_json["species"] = {
+                    "scientific_name": "",
+                    "common_name": ""
+                }
+                if crop.species is not None:
+                    if crop.species.scientific_name is not None:
+                        crop_json["species"]["scientific_name"] = crop.species.scientific_name
+                    if crop.species.common_name is not None:
+                        crop_json["species"]["common_name"] = crop.species.common_name
+
+                if crop.active_pruningevent is not None:
+                    crop_json["pruning_event"] = {"start_time": crop.active_pruningevent.start_time}
+                    crop_json["recent_prunings"] = [dict(log_time=p.log_time, completion_percentage=p.completion_percentage) for p in crop.active_pruningevent.pruning_set.order_by('-log_time')]
+                else:
+                    crop_json["pruning_event"] = None
+                    crop_json["recent_prunings"] = []
+                return JsonResponse(crop_json)
             except CropFeature.DoesNotExist:
                 raise Http404("The requested crop does not exist.")
         else:
@@ -52,6 +75,5 @@ class CropsByBounds(View):
         else:
             #TODO: Figure out the proper way to handle this.
             raise Exception("'bounds' not found in the HTTP GET parameters.")
-        
-                
-    
+
+

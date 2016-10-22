@@ -9,7 +9,24 @@ var _ = require('underscore');
 var cropDisplayControl = require('CropDisplayControl');
 var CropsInMapView = require('CropsInMapView');
 var communitree_map = require('CommunitreeMap');
+var Cookies = require('js-cookie');
 
+
+//csrfSafeMethod -- borrowed in good faith from https://docs.djangoproject.com/en/1.8/ref/csrf/
+function csrfSafeMethod(method) {
+    //these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+$.ajaxSetup({
+             beforeSend: function(xhr, settings) {
+                 var csrftoken = Cookies.get('csrftoken');
+                 if (!csrfSafeMethod(settings.type) && !this.crossDomain && !(csrftoken === undefined)) {
+                     xhr.setRequestHeader("X-CSRFToken", csrftoken);
+                 }
+                 //TODO: I feel like I should do something in the else branch, but the example didn't say what.
+             }
+            });
 
 function init() {
     L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
