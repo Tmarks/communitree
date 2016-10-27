@@ -29,23 +29,29 @@ class Crops(View):
                 #This is easier to handle on the client side. We need strings
                 #to display, so why not just send empty strings from here if
                 #that's what needs to happen?
-                crop_json["species"] = {
+                species = {
                     "scientific_name": "",
                     "common_name": ""
                 }
                 if crop.species is not None:
                     if crop.species.scientific_name is not None:
-                        crop_json["species"]["scientific_name"] = crop.species.scientific_name
+                        species["scientific_name"] = crop.species.scientific_name
                     if crop.species.common_name is not None:
-                        crop_json["species"]["common_name"] = crop.species.common_name
+                        species["common_name"] = crop.species.common_name
+                crop_json["properties"]["species"] = species;
 
                 if crop.active_pruningevent is not None:
-                    crop_json["pruning_event"] = {"start_time": crop.active_pruningevent.start_time}
-                    crop_json["recent_prunings"] = [dict(log_time=p.log_time, completion_percentage=p.completion_percentage) for p in crop.active_pruningevent.pruning_set.order_by('-log_time')]
+                    pruning_event = {"start_time": crop.active_pruningevent.start_time}
+                    recent_prunings = [dict(log_time=p.log_time, completion_percentage=p.completion_percentage) for p in crop.active_pruningevent.pruning_set.order_by('-log_time')]
                 else:
-                    crop_json["pruning_event"] = None
-                    crop_json["recent_prunings"] = []
+                    pruning_event = None
+                    recent_prunings = []
+
+                crop_json["properties"]["pruning_event"] = pruning_event
+                crop_json["properties"]["recent_prunings"] = recent_prunings
+
                 return JsonResponse(crop_json)
+
             except CropFeature.DoesNotExist:
                 raise Http404("The requested crop does not exist.")
         else:

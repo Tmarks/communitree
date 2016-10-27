@@ -5,12 +5,15 @@ var $ = require("jquery");
 var CropDisplayView = Backbone.View.extend({
     
     el: $('#interact'),
-
-    template: _.template("<p>Hello <%= model.attributes.properties.name %></p>"),
+    
+    template: _.template($("#cdvtmpl").html()),
+    
+    v: 0,
 
     render: function() {
-        this.$el.html(this.template({model: this.model}));
-        return this;
+        this.$el.html("it's sorta working" + this.v); this.v++;
+        //this.$el.html(this.template({model: this.model}));
+        //
     }
 });
 

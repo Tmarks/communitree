@@ -2,7 +2,7 @@ var Backbone = require("backbone");
 var CropFeatureModel = require("CropFeatureModel").CropFeatureModel;
 
 var CropFeatures = Backbone.Collection.extend({
-    url: 'communitree/crops',
+    url: 'crops',
     model: CropFeatureModel
 
 });
