@@ -16,30 +16,34 @@
 Underscore Template for the crop display view. cdvtmpl = Crop Display View TeMPLate...
 {% endcomment %}
 <script type="text/template" id="cdvtmpl">
-    <h2 id=cropname><%- data.crop.properties.name %></h2>
-    <p>
-        <span class="sciname"><%- data.crop.properties.species.scientific_name %></span>
-        <% if (data.crop.properties.species.scientific_name && data.crop.properties.species.common_name) { %>
-            <span> -- </span>
-        <% } %>
-        <span class="comname"><%- data.crop.properties.species.common_name %></span>
-     </p>
-        <% if (data.crop.properties.pruning_event != "" ) { %>
-            <p class="prunestatement">This plant is ready to be pruned! Bring your clippers.</p>
-            <p>There's still about <strong><%- data.crop.properties.pruning_event.remaining_percentage %>%</strong> left to prune.</p>
-            <h2>Did you help prune this plant?</h2>
-            <p>Great! Let us know what you did.</p>
-            <%= data.form %>
-            <h2>Recent Prunings</h2>
-            <ul id="recentpruningsul">
-            <% rpl = data.crop.properties.recent_prunings %>
-            <% for (var pi = 0; pi < rpl.length; pi++) { %>
-                <li class="rpruneitem"><%- rpl[pi].log_time %> -- <%- rpl[pi].completion_percentage %></li>
+    <h2 id=cropname><%- data.crop.attributes.properties.name %></h2>
+    <% if (data.ready != true) { %>
+        <p>Please wait... <%- data.ready %><%- data.crop.attributes.properties.name %></p>
+    <% } else { %>
+        <p>
+            <span class="sciname"><%- data.crop.attributes.properties.species.scientific_name %></span>
+            <% if (data.crop.attributes.properties.species.scientific_name && data.crop.attributes.properties.species.common_name) { %>
+                <span> -- </span>
             <% } %>
-                
-        <% } else { %>
-            <p class="prunestatement">This plant doesn't need to be pruned now.</p>
-        <% } %>
+            <span class="comname"><%- data.crop.attributes.properties.species.common_name %></span>
+         </p>
+            <% if (data.crop.attributes.properties.pruning_event != null ) { %>
+                <p class="prunestatement">This plant is ready to be pruned! Bring your clippers.</p>
+                <p>There's still about <strong><%- data.crop.attributes.properties.pruning_event.remaining_percentage %>%</strong> left to prune.</p>
+                <h2>Did you help prune this plant?</h2>
+                <p>Great! Let us know what you did.</p>
+                <%= data.form %>
+                <h2>Recent Prunings</h2>
+                <ul id="recentpruningsul">
+                <% rpl = data.crop.attributes.properties.recent_prunings %>
+                <% for (var pi = 0; pi < rpl.length; pi++) { %>
+                    <li class="rpruneitem"><%- rpl[pi].log_time %> -- <%- rpl[pi].completion_percentage %></li>
+                <% } %>
+                    
+            <% } else { %>
+                <p class="prunestatement">This plant doesn't need to be pruned now.</p>
+            <% } %>
+    <% } %>
 </script>
         
         

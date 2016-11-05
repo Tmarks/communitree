@@ -13,14 +13,12 @@ var cropDisplayView = new CropDisplayView();
 
 var MappedCropView = Backbone.View.extend({
     cropClick: function (e) {
-        layer=e.target;
-        cf=layer.feature.properties;
-        cropDisplayControl.update(cf);
-
-        cropDisplayView.model = this.model;
-        cropDisplayView.render();
-
-        
+        this.model.fetch({
+                           success: function(model, response, options) {
+                                        cropDisplayView.trigger("cropClick", model, true);
+                                    }
+                         });
+        cropDisplayView.trigger("cropClick", this.model, false);
     },
 
     initialize: function() {
@@ -43,17 +41,21 @@ var CropsInMapView = Backbone.View.extend({
     },
         
 
+    /*
+    //Everything is handled by the Leaflet event system here for now. I wanted 
+    //Backbone and Leaflet to play together, but then suddenly I had everything 
+    //working with just Leaflet.
+    //I think it's very much worth revisiting later.
     render: function() {
         //console.log("call CropsInMapView.render");
     },
+    */
 
     mapFeature: function(model) {
-        console.log("call mapFeature");
         this.mappedCropViews.set(model.id, new MappedCropView({ model: model }));
     },
 
     unmapFeature: function (model) {
-        console.log("call unmapFeature");
         view = this.mappedCropViews.get(model.id);
         communitree_map.removeLayer(view.geoJson);
         this.mappedCropViews.delete(model.id);

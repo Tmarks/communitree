@@ -8,13 +8,27 @@ var CropDisplayView = Backbone.View.extend({
     
     template: _.template($("#cdvtmpl").html()),
     
-    v: 0,
-
-    render: function() {
-        this.$el.html("it's sorta working" + this.v); this.v++;
-        //this.$el.html(this.template({model: this.model}));
+    initialize: function() {
+        this.on("cropClick", this.cropClickEvent);
+    },
+    
+    cropClickEvent: function(newModel, ready) {
+        this.model = newModel;
+        this.render(ready);
+    },
+    
+    render: function(ready) {
+        this.$el.html(this.template({data: {crop: this.model, ready: ready}}));
         //
+    },
+
+    /*
+    events: {
+        "cropClick" : "render"
     }
+    */
+
+    
 });
 
 module.exports = CropDisplayView;
