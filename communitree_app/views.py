@@ -10,9 +10,6 @@ from django.contrib.gis.geos import Polygon
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 
-from .forms import FaceForm
-
-
 class Index(View):
     @method_decorator(ensure_csrf_cookie)
     def get(self, request):
@@ -41,7 +38,10 @@ class Crops(View):
                 crop_json["properties"]["species"] = species;
 
                 if crop.active_pruningevent is not None:
-                    pruning_event = {"start_time": crop.active_pruningevent.start_time}
+                    pruning_event = {
+                                     "start_time": crop.active_pruningevent.start_time,
+                                     "remaining_percentage": round(1 - crop.active_pruningevent.get_completion_percentage(), 2)
+                                    }
                     recent_prunings = [dict(log_time=p.log_time, completion_percentage=p.completion_percentage) for p in crop.active_pruningevent.pruning_set.order_by('-log_time')]
                 else:
                     pruning_event = None
