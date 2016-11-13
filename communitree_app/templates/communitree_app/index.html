@@ -32,7 +32,9 @@ Underscore Template for the crop display view. cdvtmpl = Crop Display View TeMPL
                 <p>There's still about <strong><%- data.crop.attributes.properties.pruning_event.remaining_percentage %>%</strong> left to prune.</p>
                 <h2>Did you help prune this plant?</h2>
                 <p>Great! Let us know what you did.</p>
+                <form action="/prune/">
                 <%= data.form %>
+                </form>
                 <h2>Recent Prunings</h2>
                 <ul id="recentpruningsul">
                 <% rpl = data.crop.attributes.properties.recent_prunings %>

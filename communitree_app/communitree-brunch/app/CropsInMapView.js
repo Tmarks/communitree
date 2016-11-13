@@ -13,12 +13,25 @@ var cropDisplayView = new CropDisplayView();
 
 var MappedCropView = Backbone.View.extend({
     cropClick: function (e) {
-        this.model.fetch({
-                           success: function(model, response, options) {
-                                        cropDisplayView.trigger("cropClick", model, true);
-                                    }
-                         });
         cropDisplayView.trigger("cropClick", this.model, false);
+        formAjaxOptions = {
+                           url: "/cropviewforms"
+                          }
+
+        var modelGet = this.model.fetch();
+        var formGet = $.ajax(formAjaxOptions);
+
+        $.when(
+            modelGet,
+            formGet
+        )
+        .done(function() {
+                           console.log("All's well");
+                           console.log(modelGet);
+                           console.log(formGet);
+                           cropDisplayView.trigger("cropClick", model, true);
+              }
+        ).fail(function() { console.log("omg no") });
     },
 
     initialize: function() {
